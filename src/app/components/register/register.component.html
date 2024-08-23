@@ -1,4 +1,4 @@
-<form [formGroup]="registerForm">
+<form [formGroup]="registerForm" (ngSubmit)="submitDetails()">
   <p-card header="register" [style]="{width:'360px'}">
     <div class="field">
       <label for="firstName">First Name</label>
@@ -92,7 +92,7 @@
       </small>
     </div>
 
-    <p-button label="Register" styleClass="w-full" [disabled]="registerForm.invalid"></p-button>
+    <p-button label="Register" styleClass="w-full" [disabled]="registerForm.invalid" type="submit"></p-button>
     <div class="mt-2">
       already a member? <a routerLink="/login">Login</a>
     </div>

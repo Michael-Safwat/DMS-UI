@@ -1,9 +1,17 @@
 import { Injectable } from '@angular/core';
+import {HttpClient} from "@angular/common/http";
+import {User} from "../interfaces/User";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor() { }
+  private baseUrl = 'http://localhost:8080';
+
+  constructor(private http: HttpClient) { }
+  registerUser(userDetails: User)
+  {
+    return this.http.post(`${this.baseUrl}/register`,userDetails);
+  }
 }
