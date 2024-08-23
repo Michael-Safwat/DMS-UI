@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
+import {passwordMatchValidator} from "../../shared/password-match.directive";
 
 @Component({
   selector: 'app-register',
@@ -15,6 +16,16 @@ export class RegisterComponent {
     email:['',[Validators.required,Validators.email]],
     password:['',Validators.required],
     confirmPassword:['',Validators.required]
-    })
+    },{
+    validators: passwordMatchValidator
+  })
   constructor(private fb:FormBuilder) {}
+
+  get firstName() {return this.registerForm.controls['firstName'];}
+  get lastName() {return this.registerForm.controls['lastName'];}
+  get nationalId(){return this.registerForm.controls['nationalId'];}
+  get username(){return this.registerForm.controls['username'];}
+  get email(){return this.registerForm.controls['email'];}
+  get password(){return this.registerForm.controls['password'];}
+  get confirmPassword(){return this.registerForm.controls['confirmPassword'];}
 }
