@@ -1,8 +1,9 @@
-<form [formGroup]="registerForm" (ngSubmit)="submitDetails()">
+<form [formGroup]="registerForm" (ngSubmit)="registerUser()">
   <p-card header="register" [style]="{width:'360px'}">
     <div class="field">
       <label for="firstName">First Name</label>
-      <input type="text"
+      <input id="firstName"
+             type="text"
              pInputText formControlName="firstName"
              class="w-full"
              name="firstName"
@@ -15,7 +16,8 @@
     </div>
     <div class="field">
       <label for="lastName">Last Name</label>
-      <input type="text"
+      <input id="lastName"
+             type="text"
              pInputText formControlName="lastName"
              class="w-full"
              name="lastName"
@@ -28,7 +30,8 @@
     </div>
     <div class="field">
       <label for="nationalId">National ID</label>
-      <input type="text"
+      <input id="nationalId"
+             type="text"
              pInputText formControlName="nationalId"
              class="w-full"
              name="nationalId"
@@ -39,21 +42,9 @@
       </small>
     </div>
     <div class="field">
-      <label for="username">Username</label>
-      <input type="text"
-             pInputText formControlName="username"
-             class="w-full"
-             name="username"
-             placeholder="enter your username"
-      />
-      <small *ngIf="username.invalid && (username.dirty || username.touched)" class="block p-error">
-        <div *ngIf="username.errors?.['required']">Username is required.</div>
-        <div *ngIf="username.errors?.['pattern']">Username should be valid.</div>
-      </small>
-    </div>
-    <div class="field">
       <label for="email">Email</label>
-      <input type="text"
+      <input id="email"
+             type="text"
              pInputText formControlName="email"
              class="w-full"
              name="email"
@@ -66,7 +57,8 @@
     </div>
     <div class="field">
       <label for="password">Password</label>
-      <input type="password"
+      <input id="password"
+             type="password"
              pInputText formControlName="password"
              class="w-full"
              name="password"
@@ -78,7 +70,8 @@
     </div>
     <div class="field">
       <label for="confirmPassword">Confirm Password</label>
-      <input type="password"
+      <input id="confirmPassword"
+             type="password"
              pInputText formControlName="confirmPassword"
              class="w-full"
              name="confirmPassword"

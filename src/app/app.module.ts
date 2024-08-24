@@ -10,10 +10,11 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import {ReactiveFormsModule} from "@angular/forms";
 import { ButtonModule } from 'primeng/button';
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import { ToastModule } from 'primeng/toast';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MessageService} from "primeng/api";
+import {MyInterceptor} from "./Interceptor/my.interceptor";
 
 @NgModule({
   declarations: [
@@ -33,7 +34,10 @@ import {MessageService} from "primeng/api";
     ToastModule,
     BrowserAnimationsModule
   ],
-  providers: [MessageService],
+  providers: [MessageService,{
+    provide: HTTP_INTERCEPTORS, useClass:MyInterceptor,
+    multi:true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

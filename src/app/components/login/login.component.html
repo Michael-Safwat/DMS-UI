@@ -1,8 +1,9 @@
-<form [formGroup]="loginForm">
+<form [formGroup]="loginForm" (ngSubmit)="loginUser()">
   <p-card header="Login" [style]="{width:'360px'}">
     <div class="field">
       <label for="email">Email</label>
-      <input type="text"
+      <input id="email"
+             type="text"
              pInputText formControlName="email"
              class="w-full"
              name="email"
@@ -15,7 +16,8 @@
     </div>
     <div class="field">
       <label for="password">Password</label>
-      <input type="password"
+      <input id="password"
+             type="password"
              pInputText formControlName="password"
              class="w-full"
              name="password"
@@ -26,7 +28,7 @@
       </small>
     </div>
 
-    <p-button label="Log In" styleClass="w-full" [disabled]="loginForm.invalid"></p-button>
+    <p-button label="Log In" styleClass="w-full" [disabled]="loginForm.invalid" type="submit"></p-button>
     <div class="mt-2">
         Not a member? <a routerLink="/register">Register</a>
     </div>
