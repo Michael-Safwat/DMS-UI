@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {passwordMatchValidator} from "../../shared/password-match.directive";
-import {AuthService} from "../../services/auth.service";
-import {RegisterRequest} from "../../services/models/RegisterRequest";
+import {AuthService} from "../../services/authentication/auth.service";
 import {MessageService} from "primeng/api";
 import {Router} from "@angular/router";
+import {User} from "../../models/User";
 
 @Component({
   selector: 'app-register',
@@ -15,7 +15,7 @@ export class RegisterComponent {
   registerForm = this.fb.group({
     firstName:['',[Validators.required,Validators.pattern(/^[a-z ,.'-]+$/i)]],
     lastName:['',[Validators.required,Validators.pattern(/^[a-z ,.'-]+$/i)]],
-    nationalId:['',Validators.required],
+    nid:['',Validators.required],
     email:['',[Validators.required,Validators.email]],
     password:['',Validators.required],
     confirmPassword:['',Validators.required]
@@ -29,7 +29,7 @@ export class RegisterComponent {
 
   get firstName() {return this.registerForm.controls['firstName'];}
   get lastName() {return this.registerForm.controls['lastName'];}
-  get nationalId(){return this.registerForm.controls['nationalId'];}
+  get nid(){return this.registerForm.controls['nid'];}
   get email(){return this.registerForm.controls['email'];}
   get password(){return this.registerForm.controls['password'];}
   get confirmPassword(){return this.registerForm.controls['confirmPassword'];}
@@ -38,7 +38,7 @@ export class RegisterComponent {
     const postData = {... this.registerForm.value};
     delete postData.confirmPassword;
 
-    this.authService.registerUser(postData as RegisterRequest).subscribe((res:any) => {
+    this.authService.registerUser(postData as User).subscribe((res:any) => {
           console.log(res);
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Registered Successfully' });
           this.router.navigate(['login']);

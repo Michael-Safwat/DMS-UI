@@ -15,13 +15,23 @@ import { ToastModule } from 'primeng/toast';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MessageService} from "primeng/api";
 import {MyInterceptor} from "./Interceptor/my.interceptor";
+import {ToolbarModule} from "primeng/toolbar";
+import {AvatarModule} from "primeng/avatar";
+import {SplitButtonModule} from "primeng/splitbutton";
+import { HeaderComponent } from "./components/header/header.component";
+import { MyWorkspacesComponent } from './components/my-workspaces/my-workspaces.component'
+import {MenuModule} from "primeng/menu";
+import {DropdownModule} from "primeng/dropdown";
+import {TableModule} from "primeng/table";
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent
+    HomeComponent,
+    HeaderComponent,
+    MyWorkspacesComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,7 +42,13 @@ import {MyInterceptor} from "./Interceptor/my.interceptor";
     ButtonModule,
     HttpClientModule,
     ToastModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ToolbarModule,
+    AvatarModule,
+    SplitButtonModule,
+    MenuModule,
+    DropdownModule,
+    TableModule
   ],
   providers: [MessageService,{
     provide: HTTP_INTERCEPTORS, useClass:MyInterceptor,

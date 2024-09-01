@@ -1,7 +1,9 @@
-export interface RegisterRequest {
+export interface User {
+  id:string;
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  nid: number;
+  nid: string;
+  token:string;
 }

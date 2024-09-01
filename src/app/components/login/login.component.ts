@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
-import {AuthService} from "../../services/auth.service";
-import {LoginRequest} from "../../services/models/LoginRequest";
+import {AuthService} from "../../services/authentication/auth.service";
+import {User} from "../../models/User";
 import {MessageService} from "primeng/api";
 import {Router} from "@angular/router";
 
@@ -28,11 +28,12 @@ export class LoginComponent {
 
   loginUser() {
     const postData ={...this.loginForm.value};
-    this.authService.logInUser(postData as LoginRequest).subscribe((res:any) =>
+    this.authService.logInUser(postData as User).subscribe((res:any) =>
     {
       console.log('res',res);
       localStorage.setItem('token',res.token);
       localStorage.setItem('email',res.email);
+      localStorage.setItem('nid',res.nid);
 
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Login Successfully' });
       this.router.navigate(['home']);

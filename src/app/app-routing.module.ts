@@ -3,7 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import {LoginComponent} from "./components/login/login.component";
 import {RegisterComponent} from "./components/register/register.component";
 import {HomeComponent} from "./components/home/home.component";
-import {authGuard} from "./services/guards/auth.guard";
+import {authGuard} from "./guards/auth.guard";
+import {MyWorkspacesComponent} from "./components/my-workspaces/my-workspaces.component";
 
 const routes: Routes = [
   {
@@ -18,6 +19,10 @@ const routes: Routes = [
     path:'home',
     component: HomeComponent,
     canActivate: [authGuard]
+  },
+  {
+    path:'my-workspaces',
+    component:MyWorkspacesComponent
   },
   {
     path:'',redirectTo:'login',pathMatch:'full'

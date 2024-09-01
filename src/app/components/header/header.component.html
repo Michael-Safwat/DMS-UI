@@ -1,0 +1,18 @@
+
+<p-toolbar>
+  <ng-template pTemplate="start">
+    <p-button label="Upload files" icon="pi pi-upload" styleClass="p-button-success"></p-button>
+
+  </ng-template>
+  <ng-template pTemplate="center">
+    <span class="text-primary font-semibold text-xl">Document Management System</span>
+  </ng-template>
+  <ng-template pTemplate="end">
+    <div class="card flex justify-content-center">
+      <p-toast></p-toast>
+      <p-menu #menu [model]="items" [popup]="true"></p-menu>
+      <button pButton type="button" (click)="menu.toggle($event)" icon="pi pi-bars" label="menu" iconPos="right"></button>
+    </div>
+    <p-button label="logout" (onClick)="logout()" styleClass="p-button-danger"></p-button>
+  </ng-template>
+</p-toolbar>
