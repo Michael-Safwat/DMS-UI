@@ -1,5 +1,11 @@
+<div *ngIf="sessionExpired" class="p-message p-message-warning p-mb-3 block p-error">
+  <i class="pi pi-exclamation-triangle p-mr-2"></i>
+  Your session has expired. Please log in again.
+</div>
+
 <form [formGroup]="loginForm" (ngSubmit)="loginUser()">
   <p-card header="Login" [style]="{width:'360px'}">
+
     <div class="field">
       <label for="email">Email</label>
       <input id="email"

@@ -8,7 +8,12 @@ import {Observable} from "rxjs";
 })
 export class AuthService {
 
+  private user!:User;
   private baseUrl = 'http://localhost:8080';
+
+  getUser() {return this.user;}
+
+  setUser(user:User) {this.user=user;}
 
   constructor(private http: HttpClient) { }
   registerUser(userDetails: User)
@@ -19,5 +24,10 @@ export class AuthService {
 
   logInUser(loginRequest: User):Observable<any>
   {return this.http.post(`${this.baseUrl}/login`,loginRequest);}
+
+  logout() {
+    localStorage.clear();
+  }
+
 
 }

@@ -1,21 +1,69 @@
 <app-header></app-header>
 
-<div class="card">
-  <p-table [value]="workspaces" [tableStyle]="{ 'min-width': '75rem' }">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Name</th>
-        <th></th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-workspace>
-      <tr>
-        <td><div class="card flex justify-content-center">
-          <p-button label="{{workspace.name}}" [link]="true"></p-button>
-        </div></td>
-        <td><p-button label="delete workspace" icon="pi pi-times" styleClass="p-button-danger" iconPos="right"></p-button></td>
-      </tr>
-    </ng-template>
-  </p-table>
-  <p-button label="create workspace" icon="pi pi-plus" class="mr-2"></p-button>
+<div class="container" style="max-width: 800px; margin: 20px auto;">
+  <!-- Card containing the table and button -->
+  <div class="card p-4">
+    <!-- Centered "Create Workspace" button -->
+    <div class="text-right mb-4">
+      <p-button label="Create Workspace" icon="pi pi-plus" class="p-button-success" (click)="displayModal = true"></p-button>
+    </div>
+
+    <!-- Table of workspaces -->
+    <p-table [value]="workspaces" [tableStyle]="{ 'width': '100%' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="text-center">All Workspaces</th>
+          <th>Description</th>
+          <th>Creation time</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-workspace>
+        <tr>
+          <td>
+            <div class="text-center">
+              <p-button label="{{workspace.name}}" [link]="true" (click)="getWorkspace(workspace.id)"></p-button>
+            </div>
+          </td>
+          <td>{{workspace.description}}</td>
+          <td>{{workspace.createdAt}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>
+
+<p-dialog header="Create Workspace" [(visible)]="displayModal" [modal]="true" [closable]="false" [style]="{width: '300px'}">
+  <form [formGroup]="createWorkspaceForm" (ngSubmit)="createWorkspace()">
+    <div class="field">
+      <label for="workspaceName">Workspace Name</label>
+      <input id="workspaceName"
+             type="text"
+             pInputText formControlName="name"
+             placeholder="Enter workspace name"
+             required
+      />
+      <small *ngIf="name?.invalid && (name?.dirty || name?.touched)" class="p-error">
+        Workspace name is required.
+      </small>
+    </div>
+    <div class="field">
+      <label for="workspaceDescription">Workspace Description</label>
+      <input id="workspaceDescription"
+             type="text"
+             pInputText formControlName="description"
+             placeholder="Enter workspace description"
+             required
+      />
+      <small *ngIf="description?.invalid && (description?.dirty || description?.touched)" class="p-error">
+        Workspace description is required.
+      </small>
+    </div>
+    <p-footer>
+      <div class="field-pair">
+        <p-button label="Cancel" icon="pi pi-times" (click)="displayModal = false"></p-button>
+        <p-button label="Create" icon="pi pi-check" type="submit" [disabled]="createWorkspaceForm.invalid"></p-button>
+      </div>
+
+    </p-footer>
+  </form>
+</p-dialog>

@@ -1,0 +1,49 @@
+.container {
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.card {
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+p-button {
+  width: 100%;
+  display: inline-block;
+}
+
+p-table {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.field-pair {
+  display: flex;
+  gap: 1rem;
+}
+
+.field {
+  flex: 1;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.25rem; /* Adjusts the space between label and input */
+  margin-left: 0.5rem; /* Adjusts the alignment of the label to match the placeholder */
+  font-weight: bold; /* Optional: Makes the label text bold */
+}
+
+.field input {
+  padding-left: 0.5rem; /* Ensure padding is consistent between label and input */
+}
+

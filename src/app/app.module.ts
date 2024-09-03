@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
-import { HomeComponent } from './components/home/home.component';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import {ReactiveFormsModule} from "@angular/forms";
@@ -23,15 +22,20 @@ import { MyWorkspacesComponent } from './components/my-workspaces/my-workspaces.
 import {MenuModule} from "primeng/menu";
 import {DropdownModule} from "primeng/dropdown";
 import {TableModule} from "primeng/table";
+import {TokenInterceptor} from "./Interceptor/token.interceptor";
+import {DialogModule} from "primeng/dialog";
+import { WorkspaceComponent } from "./components/workspace/workspace.component";
+import { MyProfileComponent } from './components/my-profile/my-profile.component'
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent,
     HeaderComponent,
     MyWorkspacesComponent,
+    WorkspaceComponent,
+    MyProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,12 +52,21 @@ import {TableModule} from "primeng/table";
     SplitButtonModule,
     MenuModule,
     DropdownModule,
-    TableModule
+    TableModule,
+    DialogModule
   ],
-  providers: [MessageService,{
-    provide: HTTP_INTERCEPTORS, useClass:MyInterceptor,
+  providers: [MessageService,
+    {
+    provide: HTTP_INTERCEPTORS,
+    useClass:MyInterceptor,
     multi:true
-  }],
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass:TokenInterceptor,
+      multi:true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

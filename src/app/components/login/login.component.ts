@@ -1,45 +1,60 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {AuthService} from "../../services/authentication/auth.service";
 import {User} from "../../models/User";
 import {MessageService} from "primeng/api";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
+  user!:User;
+  sessionExpired: boolean = false;
   loginForm = this.fb.group({
-    email:['',[Validators.required,Validators.email]],
-    password:['',Validators.required]
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required]
   })
 
   constructor(private fb: FormBuilder,
               private authService: AuthService,
               private messageService: MessageService,
-              private router: Router) {}
+              private router: Router,
+              private route: ActivatedRoute,) {
+  }
 
-  get email()
-  {return this.loginForm.controls['email'];}
-  get password()
-  {return this.loginForm.controls['password'];}
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params['sessionExpired']) {
+        this.sessionExpired = true;
+      }
+    })
+  }
+
+  get email() {
+    return this.loginForm.controls['email'];
+  }
+
+  get password() {
+    return this.loginForm.controls['password'];
+  }
 
   loginUser() {
-    const postData ={...this.loginForm.value};
-    this.authService.logInUser(postData as User).subscribe((res:any) =>
-    {
-      console.log('res',res);
-      localStorage.setItem('token',res.token);
-      localStorage.setItem('email',res.email);
-      localStorage.setItem('nid',res.nid);
+    const postData = {...this.loginForm.value};
+    this.authService.logInUser(postData as User).subscribe((res: any) => {
+      this.user=res;
+      this.authService.setUser(this.user);
+      localStorage.setItem('token', res.token);
+      localStorage.setItem('email', res.email);
+      localStorage.setItem('nid', res.nid);
 
-      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Login Successfully' });
-      this.router.navigate(['home']);
+      this.messageService.add({severity: 'success', summary: 'Success', detail: 'Login Successfully'});
+      this.router.navigate(['my-profile']);
 
-    },error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Email or Password is incorrect!' });
+    }, error => {
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Email or Password is incorrect!'});
     })
   }
 }

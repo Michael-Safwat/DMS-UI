@@ -1,0 +1,24 @@
+<app-header></app-header>
+<div class="profile-container">
+  <p-card class="profile-card">
+    <div class="profile-header">
+      <h2 class="profile-name">{{ user.firstName }} {{ user.lastName }}</h2>
+      <p class="profile-email">{{ user.email }}</p>
+    </div>
+
+    <div class="profile-body">
+      <div class="profile-field">
+        <label for="userId" class="profile-label">User ID</label>
+        <p id="userId" class="profile-value">{{ user.id }}</p>
+      </div>
+      <div class="profile-field">
+        <label for="userNid" class="profile-label">National ID</label>
+        <p id="userNid" class="profile-value">{{ user.nid }}</p>
+      </div>
+    </div>
+  </p-card>
+</div>
+
+
+
+
