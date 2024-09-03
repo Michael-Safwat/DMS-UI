@@ -11,37 +11,34 @@ import {Router} from "@angular/router";
   styleUrls: ['./my-workspaces.component.css'],
   providers: [MessageService]
 })
-export class MyWorkspacesComponent implements OnInit{
+export class MyWorkspacesComponent implements OnInit {
 
-  // @ts-ignore
-  nid:string = localStorage.getItem("nid");
   displayModal: boolean = false;
   workspaces: Workspace[] = [];
-  createWorkspaceForm!:FormGroup;
+  createWorkspaceForm!: FormGroup;
 
-  constructor(private workspaceService:WorkspacesService,
+  constructor(private workspaceService: WorkspacesService,
               private fb: FormBuilder,
               private messageService: MessageService,
-              private router : Router){ }
+              private router: Router) {
+  }
 
   ngOnInit() {
-    this.createWorkspaceForm = this.fb.group({name:['',Validators.required],description:['',Validators.required]});
+    this.createWorkspaceForm = this.fb.group({name: ['', Validators.required], description: ['', Validators.required]});
     this.loadWorkspaces();
   }
 
-  get name()
-  {
+  get name() {
     return this.createWorkspaceForm.get('name');
   }
 
-  get description()
-  {
+  get description() {
     return this.createWorkspaceForm.get('description');
   }
 
   createWorkspace() {
     if (this.createWorkspaceForm.valid) {
-      this.workspaceService.createWorkspace(this.nid,this.createWorkspaceForm.value as Workspace).subscribe(
+      this.workspaceService.createWorkspace(this.createWorkspaceForm.value as Workspace).subscribe(
         response => {
           this.messageService.add({severity: 'success', summary: 'Success', detail: 'Workspace created!'});
           this.displayModal = false;
@@ -54,20 +51,19 @@ export class MyWorkspacesComponent implements OnInit{
     }
   }
 
-  loadWorkspaces():void
-  {
+  loadWorkspaces(): void {
 
-    this.workspaceService.getAllWorkspaces(this.nid).subscribe(
-      (data)=>{
+    this.workspaceService.getAllWorkspaces().subscribe(
+      (data) => {
         this.workspaces = data;
         console.log(this.workspaces);
-      },(error)=>{
-        console.log("Error fetching workspaces",error);
+      }, (error) => {
+        console.log("Error fetching workspaces", error);
       }
     )
   }
 
-  getWorkspace(id:string) {
-        this.router.navigate(['/workspace',id]);
+  getWorkspace(id: string) {
+    this.router.navigate(['/workspace', id]);
   }
 }

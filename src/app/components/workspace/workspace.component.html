@@ -1,5 +1,4 @@
 <app-header></app-header>
-<p-button label="Upload files" icon="pi pi-upload" styleClass="p-button-success"></p-button>
 
 <div *ngIf="workspace">
   <h1>{{ workspace.name }}</h1>
@@ -10,3 +9,19 @@
 <div *ngIf="!workspace">
   <p>Loading workspace details...</p>
 </div>
+
+<div class="card flex justify-content-center">
+  <p-fileUpload name="myfile[]" url="https://www.primefaces.org/cdn/api/upload.php" [multiple]="true" accept="image/*">
+    <ng-template pTemplate="toolbar">
+      <div class="py-3">Upload 3 Files</div>
+    </ng-template>
+    <ng-template let-file pTemplate="file">
+      <div>Custom UI to display a file</div>
+    </ng-template>
+    <ng-template pTemplate="content" let-files>
+      <div>Additional content.</div>
+    </ng-template>
+  </p-fileUpload>
+</div>
+
+

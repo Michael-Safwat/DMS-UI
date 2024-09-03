@@ -11,7 +11,7 @@ import {ActivatedRoute, Router} from "@angular/router";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  user!:User;
+  user!: User;
   sessionExpired: boolean = false;
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
   loginUser() {
     const postData = {...this.loginForm.value};
     this.authService.logInUser(postData as User).subscribe((res: any) => {
-      this.user=res;
+      this.user = res;
       this.authService.setUser(this.user);
       localStorage.setItem('token', res.token);
       localStorage.setItem('email', res.email);

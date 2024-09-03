@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Workspace} from "../../models/Workspace";
@@ -9,19 +9,19 @@ import {Workspace} from "../../models/Workspace";
 export class WorkspacesService {
 
   private baseUrl: string = 'http://localhost:8080';
-  constructor(private http: HttpClient) { }
 
-  getAllWorkspaces(nid:string):Observable<any>
-  {
-    return this.http.get(`${this.baseUrl}/workspaces/${nid}`);
+  constructor(private http: HttpClient) {
   }
 
-  getWorkspaceById(nid:string,id:string):Observable<any>{
-    return this.http.get(`${this.baseUrl}/workspaces/${nid}/${id}`);
+  getAllWorkspaces(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/workspaces`);
   }
 
-  createWorkspace(nid:string, workspace:Workspace):Observable<any>
-  {
-      return this.http.post(`${this.baseUrl}/workspaces/${nid}`,workspace);
+  getWorkspaceById(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/workspaces/${id}`);
+  }
+
+  createWorkspace(workspace: Workspace): Observable<any> {
+    return this.http.post(`${this.baseUrl}/workspaces`, workspace);
   }
 }

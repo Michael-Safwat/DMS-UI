@@ -8,25 +8,25 @@ import {WorkspacesService} from "../../services/workspaces/workspaces.service";
   templateUrl: './workspace.component.html',
   styleUrls: ['./workspace.component.css']
 })
-export class WorkspaceComponent implements OnInit{
-  workspace!:Workspace;
-  // @ts-ignore
-  nid:string = localStorage.getItem("nid");
+export class WorkspaceComponent implements OnInit {
+  workspace!: Workspace;
 
-  constructor(private route:ActivatedRoute,
-              private workspaceService: WorkspacesService) {}
+  constructor(private route: ActivatedRoute,
+              private workspaceService: WorkspacesService) {
+  }
+
   ngOnInit() {
     const workspaceId = this.route.snapshot.paramMap.get("id");
     this.fetchWorkspace(workspaceId!);
   }
 
   private fetchWorkspace(id: string) {
-    this.workspaceService.getWorkspaceById(this.nid,id).subscribe(
-      (data)=>{
-        this.workspace=data;
+    this.workspaceService.getWorkspaceById(id).subscribe(
+      (data) => {
+        this.workspace = data;
       },
-      (error)=>{
-        console.error('Error fetching the workspace',error);
+      (error) => {
+        console.error('Error fetching the workspace', error);
       }
     )
   }

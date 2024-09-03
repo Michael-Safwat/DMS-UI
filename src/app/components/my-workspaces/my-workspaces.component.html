@@ -5,7 +5,8 @@
   <div class="card p-4">
     <!-- Centered "Create Workspace" button -->
     <div class="text-right mb-4">
-      <p-button label="Create Workspace" icon="pi pi-plus" class="p-button-success" (click)="displayModal = true"></p-button>
+      <p-button label="Create Workspace" icon="pi pi-plus" class="p-button-success"
+                (click)="displayModal = true"></p-button>
     </div>
 
     <!-- Table of workspaces -->
@@ -24,15 +25,16 @@
               <p-button label="{{workspace.name}}" [link]="true" (click)="getWorkspace(workspace.id)"></p-button>
             </div>
           </td>
-          <td>{{workspace.description}}</td>
-          <td>{{workspace.createdAt}}</td>
+          <td>{{ workspace.description }}</td>
+          <td>{{ workspace.createdAt }}</td>
         </tr>
       </ng-template>
     </p-table>
   </div>
 </div>
 
-<p-dialog header="Create Workspace" [(visible)]="displayModal" [modal]="true" [closable]="false" [style]="{width: '300px'}">
+<p-dialog header="Create Workspace" [(visible)]="displayModal" [modal]="true" [closable]="false"
+          [style]="{width: '300px'}">
   <form [formGroup]="createWorkspaceForm" (ngSubmit)="createWorkspace()">
     <div class="field">
       <label for="workspaceName">Workspace Name</label>

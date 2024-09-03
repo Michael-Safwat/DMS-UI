@@ -7,13 +7,15 @@ import {User} from "../../models/User";
   templateUrl: './my-profile.component.html',
   styleUrls: ['./my-profile.component.css']
 })
-export class MyProfileComponent implements OnInit{
+export class MyProfileComponent implements OnInit {
 
-  user!:User;
-  constructor(private authService: AuthService) {}
+  user!: User;
+
+  constructor(private authService: AuthService) {
+  }
 
   ngOnInit() {
-    this.user= this.authService.getUser();
+    this.user = this.authService.getUser();
   }
 
 }

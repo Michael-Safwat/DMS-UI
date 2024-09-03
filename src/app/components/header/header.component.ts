@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {AuthService} from "../../services/authentication/auth.service";
 import {MenuItem, MenuItemCommandEvent} from 'primeng/api';
@@ -8,7 +8,7 @@ import {MenuItem, MenuItemCommandEvent} from 'primeng/api';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit{
+export class HeaderComponent implements OnInit {
   items: MenuItem[] | undefined;
 
   ngOnInit() {
@@ -16,7 +16,7 @@ export class HeaderComponent implements OnInit{
       {
         label: 'My Profile',
         icon: 'pi pi-user',
-        routerLink: '/workspaces'
+        routerLink: '/my-profile'
       },
       {
         label: 'My Workspaces',
@@ -26,17 +26,17 @@ export class HeaderComponent implements OnInit{
       {
         label: 'Log out',
         icon: 'pi pi-sign-out',
-        command:() => {
+        command: () => {
           this.logout()
         }
       }
     ];
   }
 
-  constructor(private router:Router, private service: AuthService) {}
+  constructor(private router: Router, private service: AuthService) {
+  }
 
-  logout()
-  {
+  logout() {
     this.service.logout();
     this.router.navigate(['/login']);
   }

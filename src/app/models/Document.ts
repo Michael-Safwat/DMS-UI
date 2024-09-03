@@ -1,7 +1,7 @@
-export interface Document{
+export interface Document {
   id: string;
   workspaceId: string;
   name: string;
-  type:string;
+  type: string;
   userNID: number;
 }
