@@ -15,25 +15,22 @@ export class AuthService {
     return this.user;
   }
 
-  setUser(user: User) {
-    this.user = user;
-  }
-
   constructor(private http: HttpClient) {
   }
 
-  registerUser(userDetails: User) {
-    console.log(userDetails);
-    return this.http.post(`${this.baseUrl}/register`, userDetails);
+  registerUser(registerRequest: User) {
+    return this.http.post(`${this.baseUrl}/register`, registerRequest);
   }
 
   logInUser(loginRequest: User): Observable<any> {
     return this.http.post(`${this.baseUrl}/login`, loginRequest);
   }
 
+  getUserInfo(userEmail: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/users/${userEmail}`);
+  }
+
   logout() {
     localStorage.clear();
   }
-
-
 }

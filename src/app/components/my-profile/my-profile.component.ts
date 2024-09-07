@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../services/authentication/auth.service";
 import {User} from "../../models/User";
+import {ActivatedRoute} from "@angular/router";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-my-profile',
@@ -9,13 +11,20 @@ import {User} from "../../models/User";
 })
 export class MyProfileComponent implements OnInit {
 
-  user!: User;
+  user = {} as User;
+  // @ts-ignore
+  userEmail: string = localStorage.getItem("email");
 
-  constructor(private authService: AuthService) {
+  constructor(private userService: AuthService,
+              private messageService: MessageService) {
   }
 
   ngOnInit() {
-    this.user = this.authService.getUser();
+    this.userService.getUserInfo(this.userEmail).subscribe((res) => {
+      this.user = res;
+    }, error => {
+      console.error("couldn't load user data!", error);
+    })
   }
 
 }

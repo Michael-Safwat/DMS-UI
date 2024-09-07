@@ -1,27 +1,90 @@
 <app-header></app-header>
 
-<div *ngIf="workspace">
-  <h1>{{ workspace.name }}</h1>
-  <p>{{ workspace.description }}</p>
-  <p>Created At: {{ workspace.createdAt }}</p>
+<div *ngIf="workspace" class="workspace-details-container">
+  <h1 class="workspace-title">{{ workspace.name }}</h1>
+
+  <div class="workspace-meta">
+    <p class="workspace-description">{{ workspace.description }}</p>
+    <p class="workspace-created">Created At: {{ workspace.createdAt | date: 'medium' }}</p>
+  </div>
+
+  <div class="workspace-actions">
+    <button pButton type="button" label="Update Workspace" icon="pi pi-pencil" class="p-button-warning"
+            (click)="showUpdateDialog()"></button>
+    <button pButton type="button" label="Delete Workspace" icon="pi pi-trash" class="p-button-danger"
+            (click)="showDeleteDialog()"></button>
+  </div>
+
+  <div class="file-upload-section">
+    <div class="file-upload-header">Upload Your Files</div>
+
+    <p-fileUpload name="file" url="http://localhost:8080/workspaces/{{workspace.id}}/files" [multiple]="false"
+                  accept="image/*,.pdf">
+      <ng-template pTemplate="content">
+        <ul *ngIf="uploadedFiles.length">
+          <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes</li>
+        </ul>
+      </ng-template>
+    </p-fileUpload>
+  </div>
 </div>
 
 <div *ngIf="!workspace">
   <p>Loading workspace details...</p>
 </div>
 
-<div class="card flex justify-content-center">
-  <p-fileUpload name="myfile[]" url="https://www.primefaces.org/cdn/api/upload.php" [multiple]="true" accept="image/*">
-    <ng-template pTemplate="toolbar">
-      <div class="py-3">Upload 3 Files</div>
-    </ng-template>
-    <ng-template let-file pTemplate="file">
-      <div>Custom UI to display a file</div>
-    </ng-template>
-    <ng-template pTemplate="content" let-files>
-      <div>Additional content.</div>
-    </ng-template>
-  </p-fileUpload>
+<p-dialog header="Confirm Delete Workspace" [(visible)]="deleteDialogVisible" [modal]="true" [closable]="false">
+  <p>Are you sure you want to delete this workspace?</p>
+  <p>To confirm, please enter the workspace name below:</p>
+
+  <input type="text" placeholder="Workspace name" [(ngModel)]="deleteConfirmationName" class="confirmation-input">
+
+  <p-message *ngIf="deleteConfirmationName && deleteConfirmationName !== workspace.name"
+             severity="error" text="Workspace name does not match"></p-message>
+
+  <p-footer>
+    <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary"
+            (click)="deleteDialogVisible = false"></button>
+    <button pButton label="Delete" icon="pi pi-check" class="p-button-danger"
+            [disabled]="deleteConfirmationName !== workspace.name"
+            (click)="deleteWorkspace()"></button>
+  </p-footer>
+</p-dialog>
+
+<p-dialog header="Update Workspace" [(visible)]="updateDialogVisible" [modal]="true" [closable]="false">
+
+  <label for="workspace_name">Workspace Name</label>
+  <input type="text" placeholder="Workspace name" id="workspace_name" [(ngModel)]="updatedName"
+         class="confirmation-input">
+  <label for="workspace_description">Workspace Description</label>
+  <input type="text" placeholder="Workspace name" id="workspace_description" [(ngModel)]="updatedDescription"
+         class="confirmation-input">
+
+  <p-message *ngIf="updatedName === workspace.name && updatedDescription === workspace.description"
+             severity="error" text="Workspace data not changed"></p-message>
+
+  <p-footer>
+    <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary"
+            (click)="updateDialogVisible = false"></button>
+    <button pButton label="Update" icon="pi pi-check" class="p-button-warning"
+            [disabled]="updatedName === workspace.name && updatedDescription === workspace.description"
+            (click)="updateWorkspace(updatedName,updatedDescription)"></button>
+  </p-footer>
+</p-dialog>
+
+<!-- Display Documents Section -->
+<div *ngIf="documents.length > 0" class="documents-section">
+  <h2 class="documents-title">Uploaded Documents</h2>
+
+  <!-- Using PrimeNG Cards for Document Display -->
+  <div class="p-grid">
+    <div class="p-col-12 p-md-4" *ngFor="let document of documents">
+      <p-card [header]="document.name" [subheader]="document.type" class="document-card">
+        <ng-template pTemplate="content">
+          <p>Uploaded At: {{ document.createdAt | date: 'medium' }}</p>
+          <button pButton type="button" label="Download" icon="pi pi-download" class="p-button-primary"></button>
+        </ng-template>
+      </p-card>
+    </div>
+  </div>
 </div>
-
-

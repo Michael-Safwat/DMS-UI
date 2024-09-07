@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Workspace} from "../../models/Workspace";
+import {FileUpload, FileUploadEvent} from "primeng/fileupload";
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +24,21 @@ export class WorkspacesService {
 
   createWorkspace(workspace: Workspace): Observable<any> {
     return this.http.post(`${this.baseUrl}/workspaces`, workspace);
+  }
+
+  deleteWorkspace(workspaceId: string) {
+    return this.http.delete(`${this.baseUrl}/workspaces/${workspaceId}`);
+  }
+
+  updateWorkspace(workspaceId: string, workspace: Workspace) {
+    return this.http.put(`${this.baseUrl}/workspaces/${workspaceId}`, workspace);
+  }
+
+  uploadFile(file: FileUploadEvent, workspaceId: string) {
+    return this.http.post(`${this.baseUrl}/workspaces/${workspaceId}/files`, file);
+  }
+
+  getAllDocuments(workspaceId: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/workspaces/${workspaceId}/files`)
   }
 }

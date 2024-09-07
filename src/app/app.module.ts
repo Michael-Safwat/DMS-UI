@@ -7,7 +7,7 @@ import {LoginComponent} from './components/login/login.component';
 import {RegisterComponent} from './components/register/register.component';
 import {CardModule} from 'primeng/card';
 import {InputTextModule} from 'primeng/inputtext';
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ButtonModule} from 'primeng/button';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {ToastModule} from 'primeng/toast';
@@ -27,6 +27,8 @@ import {DialogModule} from "primeng/dialog";
 import {WorkspaceComponent} from "./components/workspace/workspace.component";
 import {MyProfileComponent} from './components/my-profile/my-profile.component'
 import {FileUploadModule} from "primeng/fileupload";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {MessageModule} from "primeng/message";
 
 @NgModule({
   declarations: [
@@ -55,7 +57,10 @@ import {FileUploadModule} from "primeng/fileupload";
     DropdownModule,
     TableModule,
     DialogModule,
-    FileUploadModule
+    FileUploadModule,
+    ConfirmDialogModule,
+    FormsModule,
+    MessageModule
   ],
   providers: [MessageService,
     {

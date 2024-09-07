@@ -1,0 +1,143 @@
+/* General container for workspace details */
+.workspace-details-container {
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 30px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Workspace title styling */
+.workspace-title {
+  font-size: 2.8rem;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+/* Workspace metadata styling */
+.workspace-meta {
+  margin-bottom: 35px;
+}
+
+.workspace-description {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.workspace-created {
+  font-size: 0.95rem;
+  color: #888;
+}
+
+/* Action buttons styling */
+.workspace-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.p-button {
+  font-size: 1rem;
+  padding: 12px 24px;
+}
+
+/* File upload section styling */
+.file-upload-section {
+  margin: 40px 0;
+  padding: 25px;
+  background-color: #fff;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.file-upload-header {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 20px;
+}
+
+/* Documents section */
+.documents-section {
+  margin-top: 50px;
+  text-align: left;
+}
+
+.documents-section h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #34495e;
+  margin-bottom: 30px;
+}
+
+/* Document cards grid */
+.p-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.p-col-12 {
+  flex: 0 0 100%;
+}
+
+.p-md-4 {
+  flex: 0 0 calc(33.33% - 20px);
+}
+
+/* Document card styling */
+.p-card {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  text-align: left;
+  transition: all 0.3s;
+}
+
+.p-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.p-card-header {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.p-card-subheader {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  margin-bottom: 15px;
+}
+
+.p-card-content p {
+  color: #555;
+}
+
+/* Dialogs styling */
+.p-dialog {
+  max-width: 600px;
+}
+
+.confirmation-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 15px;
+}
+
+.p-footer {
+  text-align: right;
+  margin-top: 20px;
+}

@@ -4,4 +4,5 @@ export interface Document {
   name: string;
   type: string;
   userNID: number;
+  createdAt: string;
 }
