@@ -29,6 +29,8 @@ import {MyProfileComponent} from './components/my-profile/my-profile.component'
 import {FileUploadModule} from "primeng/fileupload";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {MessageModule} from "primeng/message";
+import {RatingModule} from "primeng/rating";
+import {TagModule} from "primeng/tag";
 
 @NgModule({
   declarations: [
@@ -60,7 +62,9 @@ import {MessageModule} from "primeng/message";
     FileUploadModule,
     ConfirmDialogModule,
     FormsModule,
-    MessageModule
+    MessageModule,
+    RatingModule,
+    TagModule
   ],
   providers: [MessageService,
     {

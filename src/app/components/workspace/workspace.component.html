@@ -14,19 +14,6 @@
     <button pButton type="button" label="Delete Workspace" icon="pi pi-trash" class="p-button-danger"
             (click)="showDeleteDialog()"></button>
   </div>
-
-  <div class="file-upload-section">
-    <div class="file-upload-header">Upload Your Files</div>
-
-    <p-fileUpload name="file" url="http://localhost:8080/workspaces/{{workspace.id}}/files" [multiple]="false"
-                  accept="image/*,.pdf">
-      <ng-template pTemplate="content">
-        <ul *ngIf="uploadedFiles.length">
-          <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes</li>
-        </ul>
-      </ng-template>
-    </p-fileUpload>
-  </div>
 </div>
 
 <div *ngIf="!workspace">
@@ -72,19 +59,70 @@
   </p-footer>
 </p-dialog>
 
-<!-- Display Documents Section -->
-<div *ngIf="documents.length > 0" class="documents-section">
-  <h2 class="documents-title">Uploaded Documents</h2>
 
-  <!-- Using PrimeNG Cards for Document Display -->
-  <div class="p-grid">
-    <div class="p-col-12 p-md-4" *ngFor="let document of documents">
-      <p-card [header]="document.name" [subheader]="document.type" class="document-card">
-        <ng-template pTemplate="content">
-          <p>Uploaded At: {{ document.createdAt | date: 'medium' }}</p>
-          <button pButton type="button" label="Download" icon="pi pi-download" class="p-button-primary"></button>
-        </ng-template>
-      </p-card>
+<p-toast></p-toast>
+<p-toolbar styleClass="mb-4 gap-2">
+  <ng-template pTemplate="left">
+  </ng-template>
+  <ng-template pTemplate="right">
+    <p-fileUpload mode="basic" accept="image/*, .pdf" name="file" url="http://localhost:8080/workspaces/{{workspace.id}}/files" (onUpload)="onUpload($event)"
+                  [maxFileSize]="1000000" label="upload" chooseLabel="upload files" class="mr-2 inline-block" [multiple]="false"></p-fileUpload>
+  </ng-template>
+</p-toolbar>
+
+<p-table
+  #dt
+  [value]="documents"
+  [rows]="10"
+  [globalFilterFields]="['name', 'type', 'creation_date']"
+  [tableStyle]="{ 'min-width': '75rem' }"
+  [rowHover]="true"
+  dataKey="id"
+>
+  <ng-template pTemplate="caption">
+    <div class="flex align-items-center justify-content-between">
+      <h5 class="m-0">Files</h5>
+      <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($event.target, 'contains')" placeholder="Search..." />
+            </span>
     </div>
-  </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="name" style="min-width:15rem">Name <p-sortIcon field="name"></p-sortIcon></th>
+      <th pSortableColumn="type" style="min-width:10rem">Type <p-sortIcon field="type"></p-sortIcon></th>
+      <th pSortableColumn="createdAt">Creation time<p-sortIcon field="createdAt"></p-sortIcon></th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-document>
+    <tr>
+
+      <td> <div class="text-center">
+        <p-button label="{{document.name}}" [link]="true" (click)="previewDocument(document.id,document.type)"></p-button>
+      </div>
+      </td>
+      <td>{{ document.type }}</td>
+      <td>{{ document.createdAt | date: 'medium' }}</td>
+      <td>
+        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="updateDocument(document)"></button>
+
+        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="confirmDelete(document.id)"></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<!-- file-preview.component.html -->
+<div *ngIf="documentUrl">
+  <!-- Example for a PDF -->
+  <iframe [src]="documentUrl" width="100%" height="600px"></iframe>
+
+  <!-- Example for an image -->
+  <!-- <img [src]="fileUrl" alt="Preview" /> -->
 </div>
+
+<p-toast></p-toast>
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
+

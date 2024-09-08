@@ -2,8 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {Workspace} from "../../models/Workspace";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WorkspacesService} from "../../services/workspaces/workspaces.service";
-import {ConfirmationService, MessageService} from 'primeng/api';
+import {ConfirmationService, ConfirmEventType, MessageService} from 'primeng/api';
 import {Document} from "../../models/Document";
+import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-workspace',
@@ -19,12 +20,14 @@ export class WorkspaceComponent implements OnInit {
   updateDialogVisible: boolean = false;
   updatedName: string = "";
   updatedDescription: string = "";
-  uploadedFiles: any[] = [];
+  documentUrl:SafeResourceUrl="";
 
   constructor(private route: ActivatedRoute,
               private workspaceService: WorkspacesService,
               private messageService: MessageService,
-              private router: Router) {
+              private router: Router,
+              private sanitizer: DomSanitizer,
+              private confirmationService: ConfirmationService) {
   }
 
   ngOnInit() {
@@ -85,6 +88,62 @@ export class WorkspaceComponent implements OnInit {
   }
 
   onUpload(event: any) {
-    this.messageService.add({severity: 'success', summary: 'Success', detail: 'Workspace updated successfully!'});
+    this.messageService.add({severity: 'success', summary: 'Success', detail: 'file uploaded!'});
+    this.fetchAllDocuments(this.workspace.id);
+  }
+
+  updateDocument(document: any) {
+
+  }
+
+  previewDocument(documentId: string,documentType:string) {
+    console.log(this.workspace.id,documentId);
+
+    this.workspaceService.previewDocument(this.workspace.id,documentId).subscribe((base64Data:string)=>{
+      const blob = this.base64ToBlob(base64Data, documentType);
+      const unsafeFileUrl = URL.createObjectURL(blob);
+      this.documentUrl = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeFileUrl);
+    },error => {
+      this.messageService.add({severity:'error',summary:'Error',detail:'Unable to preview document'});
+    })
+  }
+
+  base64ToBlob(base64Data: string, contentType: string): Blob {
+    const byteCharacters = atob(base64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+      const slice = byteCharacters.slice(offset, offset + 512);
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    return new Blob(byteArrays, { type: contentType });
+  }
+
+  protected readonly document = document;
+
+  confirmDelete(documentId:string) {
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to delete this file?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.messageService.add({ severity: 'success', summary: 'Confirmed', detail: 'file deleted' });
+        this.deleteDocument(documentId);
+      }
+    });
+  }
+
+  deleteDocument(documentId:string ) {
+    this.workspaceService.deleteDocument(this.workspace.id,documentId).subscribe((res)=>{
+      this.fetchAllDocuments(this.workspace.id);
+    },error => {
+
+    })
   }
 }

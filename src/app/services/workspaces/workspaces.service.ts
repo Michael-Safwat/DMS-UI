@@ -41,4 +41,12 @@ export class WorkspacesService {
   getAllDocuments(workspaceId: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/workspaces/${workspaceId}/files`)
   }
+
+  previewDocument(workspaceId:string, documentId:string):Observable<any>{
+    return this.http.get(`${this.baseUrl}/workspaces/${workspaceId}/filesPreview/${documentId}`,{ responseType: 'text' });
+  }
+
+  deleteDocument(workspaceId:string, documentId:string):Observable<any>{
+    return this.http.delete(`${this.baseUrl}/workspaces/${workspaceId}/files/${documentId}`);
+  }
 }

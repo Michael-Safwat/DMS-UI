@@ -47,6 +47,7 @@
         />
         <small *ngIf="nid.invalid && (nid.dirty || nid.touched)" class="block p-error">
           <div *ngIf="nid.errors?.['required']">National ID is required.</div>
+          <div *ngIf="nid.errors?.['pattern']">National must be 16 digits long.</div>
         </small>
       </div>
       <div class="field">

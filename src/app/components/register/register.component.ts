@@ -15,7 +15,7 @@ export class RegisterComponent {
   registerForm = this.fb.group({
     firstName: ['', [Validators.required, Validators.pattern(/^[a-z ,.'-]+$/i)]],
     lastName: ['', [Validators.required, Validators.pattern(/^[a-z ,.'-]+$/i)]],
-    nid: ['', Validators.required],
+    nid: ['', [Validators.required, Validators.pattern(/^[0-9]{16}$/)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
     confirmPassword: ['', Validators.required]
@@ -63,7 +63,7 @@ export class RegisterComponent {
         this.router.navigate(['login']);
       },
       error => {
-        this.messageService.add({severity: 'error', summary: 'Error', detail: 'Something went wrong!'});
+        this.messageService.add({severity: 'error', summary: 'Error', detail: 'Register form input not valid!'});
       })
   }
 }
