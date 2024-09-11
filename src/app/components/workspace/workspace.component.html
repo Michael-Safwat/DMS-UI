@@ -21,8 +21,7 @@
 </div>
 
 <p-dialog header="Confirm Delete Workspace" [(visible)]="deleteDialogVisible" [modal]="true" [closable]="false">
-  <p>Are you sure you want to delete this workspace?</p>
-  <p>To confirm, please enter the workspace name below:</p>
+  <p>To confirm deletion, please enter the workspace name:</p>
 
   <input type="text" placeholder="Workspace name" [(ngModel)]="deleteConfirmationName" class="confirmation-input">
 
@@ -59,17 +58,6 @@
   </p-footer>
 </p-dialog>
 
-
-<p-toast></p-toast>
-<p-toolbar styleClass="mb-4 gap-2">
-  <ng-template pTemplate="left">
-  </ng-template>
-  <ng-template pTemplate="right">
-    <p-fileUpload mode="basic" accept="image/*, .pdf" name="file" url="http://localhost:8080/workspaces/{{workspace.id}}/files" (onUpload)="onUpload($event)"
-                  [maxFileSize]="1000000" label="upload" chooseLabel="upload files" class="mr-2 inline-block" [multiple]="false"></p-fileUpload>
-  </ng-template>
-</p-toolbar>
-
 <p-table
   #dt
   [value]="documents"
@@ -81,7 +69,12 @@
 >
   <ng-template pTemplate="caption">
     <div class="flex align-items-center justify-content-between">
-      <h5 class="m-0">Files</h5>
+      <span class="p-input-icon-right">
+      <p-fileUpload mode="basic" accept="image/*, .pdf, .txt" name="file"
+                    url="http://localhost:8080/workspaces/{{workspace.id}}/documents" (onUpload)="onUpload($event)"
+                    [maxFileSize]="1000000" label="upload" chooseLabel="upload files" class="mr-2 inline-block" [multiple]="false">
+      </p-fileUpload>
+      </span>
       <span class="p-input-icon-left">
                 <i class="pi pi-search"></i>
                 <input pInputText type="text" (input)="dt.filterGlobal($event.target, 'contains')" placeholder="Search..." />
@@ -100,29 +93,44 @@
     <tr>
 
       <td> <div class="text-center">
-        <p-button label="{{document.name}}" [link]="true" (click)="previewDocument(document.id,document.type)"></p-button>
-      </div>
+        <p-button label="{{document.name}}" [link]="true" (click)="previewDocument(document.id,document.type)"></p-button></div>
       </td>
       <td>{{ document.type }}</td>
       <td>{{ document.createdAt | date: 'medium' }}</td>
       <td>
-        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="updateDocument(document)"></button>
-
-        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="confirmDelete(document.id)"></button>
+        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="confirmUpdate(document)"></button>
+        <button pButton pRipple icon="pi pi-download" class="p-button-rounded p-button-info mr-2" (click)="downloadDocument(document.id)"></button>
+        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger mr-2" (click)="confirmDelete(document.id)"></button>
       </td>
     </tr>
   </ng-template>
 </p-table>
 
-<!-- file-preview.component.html -->
-<div *ngIf="documentUrl">
-  <!-- Example for a PDF -->
-  <iframe [src]="documentUrl" width="100%" height="600px"></iframe>
 
-  <!-- Example for an image -->
-  <!-- <img [src]="fileUrl" alt="Preview" /> -->
-</div>
+<p-dialog [(visible)]="displayModal" [modal]="true" [style]="{width: '90vw', height: '90vh'}" [dismissableMask]="true" [closable]="true">
+  <ng-container *ngIf="documentUrl">
+    <iframe [src]="documentUrl" class="document-preview" ></iframe>
+  </ng-container>
+</p-dialog>
 
 <p-toast></p-toast>
 <p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
+
+<p-dialog header="Update Workspace" [(visible)]="updateDocumentDialog" [modal]="true" [closable]="false">
+
+  <label for="workspace_name">Document Name</label>
+  <input type="text" placeholder="Document name" id="document_name" [(ngModel)]="updatedDocumentName"
+         class="confirmation-input">
+
+  <p-message *ngIf="updatedDocumentName === document.name"
+             severity="error" text="Workspace data not changed"></p-message>
+
+  <p-footer>
+    <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary"
+            (click)="updateDocumentDialog = false"></button>
+    <button pButton label="Update" icon="pi pi-check" class="p-button-warning"
+            [disabled]="updatedDocumentName === document.name"
+            (click)="updateDocument(updatedDocumentName)"></button>
+  </p-footer>
+</p-dialog>
 

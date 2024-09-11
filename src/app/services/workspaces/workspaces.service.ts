@@ -34,19 +34,12 @@ export class WorkspacesService {
     return this.http.put(`${this.baseUrl}/workspaces/${workspaceId}`, workspace);
   }
 
-  uploadFile(file: FileUploadEvent, workspaceId: string) {
-    return this.http.post(`${this.baseUrl}/workspaces/${workspaceId}/files`, file);
+  uploadDocument(file: FileUploadEvent, workspaceId: string) {
+    return this.http.post(`${this.baseUrl}/workspaces/${workspaceId}/documents`, file);
   }
 
   getAllDocuments(workspaceId: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/workspaces/${workspaceId}/files`)
+    return this.http.get(`${this.baseUrl}/workspaces/${workspaceId}/documents`)
   }
 
-  previewDocument(workspaceId:string, documentId:string):Observable<any>{
-    return this.http.get(`${this.baseUrl}/workspaces/${workspaceId}/filesPreview/${documentId}`,{ responseType: 'text' });
-  }
-
-  deleteDocument(workspaceId:string, documentId:string):Observable<any>{
-    return this.http.delete(`${this.baseUrl}/workspaces/${workspaceId}/files/${documentId}`);
-  }
 }

@@ -5,6 +5,7 @@ import {WorkspacesService} from "../../services/workspaces/workspaces.service";
 import {ConfirmationService, ConfirmEventType, MessageService} from 'primeng/api';
 import {Document} from "../../models/Document";
 import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
+import {DocumentsService} from "../../services/documents/documents.service";
 
 @Component({
   selector: 'app-workspace',
@@ -15,19 +16,26 @@ import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
 export class WorkspaceComponent implements OnInit {
   workspace = {} as Workspace;
   documents = [] as Document [];
+  documentId: string = "";
   deleteConfirmationName: string = "";
   deleteDialogVisible: boolean = false;
   updateDialogVisible: boolean = false;
   updatedName: string = "";
   updatedDescription: string = "";
-  documentUrl:SafeResourceUrl="";
+  documentUrl: SafeResourceUrl = "";
+  displayModal: boolean = false;
+  updateDocumentDialog: boolean = false;
+  updatedDocumentName: string = "";
+  document = {} as Document;
+
 
   constructor(private route: ActivatedRoute,
               private workspaceService: WorkspacesService,
               private messageService: MessageService,
               private router: Router,
               private sanitizer: DomSanitizer,
-              private confirmationService: ConfirmationService) {
+              private confirmationService: ConfirmationService,
+              private documentsService: DocumentsService) {
   }
 
   ngOnInit() {
@@ -92,19 +100,17 @@ export class WorkspaceComponent implements OnInit {
     this.fetchAllDocuments(this.workspace.id);
   }
 
-  updateDocument(document: any) {
+  previewDocument(documentId: string, documentType: string) {
+    this.displayModal = true;
+    this.documentId = documentId;
 
-  }
 
-  previewDocument(documentId: string,documentType:string) {
-    console.log(this.workspace.id,documentId);
-
-    this.workspaceService.previewDocument(this.workspace.id,documentId).subscribe((base64Data:string)=>{
+    this.documentsService.previewDocument(documentId).subscribe((base64Data: string) => {
       const blob = this.base64ToBlob(base64Data, documentType);
       const unsafeFileUrl = URL.createObjectURL(blob);
       this.documentUrl = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeFileUrl);
-    },error => {
-      this.messageService.add({severity:'error',summary:'Error',detail:'Unable to preview document'});
+    }, error => {
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Unable to preview document'});
     })
   }
 
@@ -122,28 +128,71 @@ export class WorkspaceComponent implements OnInit {
       byteArrays.push(byteArray);
     }
 
-    return new Blob(byteArrays, { type: contentType });
+    return new Blob(byteArrays, {type: contentType});
   }
 
-  protected readonly document = document;
-
-  confirmDelete(documentId:string) {
+  confirmDelete(documentId: string) {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to delete this file?',
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.messageService.add({ severity: 'success', summary: 'Confirmed', detail: 'file deleted' });
         this.deleteDocument(documentId);
       }
     });
   }
 
-  deleteDocument(documentId:string ) {
-    this.workspaceService.deleteDocument(this.workspace.id,documentId).subscribe((res)=>{
+  deleteDocument(documentId: string) {
+    this.documentsService.deleteDocument(documentId).subscribe((res) => {
       this.fetchAllDocuments(this.workspace.id);
-    },error => {
+      this.messageService.add({severity: 'success', summary: 'Confirmed', detail: 'file deleted'});
+    }, error => {
 
     })
   }
+
+  downloadDocument(documentId: string) {
+    this.documentsService.downloadDocument(documentId).subscribe(response => {
+      const blob = response.body;
+      const contentDisposition = response.headers.get('Content-Disposition') || response.headers.get('content-disposition');
+      const fileName = this.getFileNameFromContentDisposition(contentDisposition);
+
+      // @ts-ignore
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = fileName || 'downloaded-file'; // Fallback in case fileName is null
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl);
+    }, error => {
+      console.error('Download error:', error);
+    });
+  }
+
+  private getFileNameFromContentDisposition(contentDisposition: string | null): string {
+    if (!contentDisposition) return 'downloaded-file'; // Fallback if no header
+    const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+    return matches && matches[1] ? matches[1].replace(/['"]/g, '') : 'downloaded-file'; // Remove quotes if present
+  }
+
+  confirmUpdate(document: Document) {
+    this.updateDocumentDialog = true;
+    this.updatedDocumentName = document.name;
+    this.document = document;
+  }
+
+  updateDocument(updatedDocumentName: string) {
+    this.updateDocumentDialog = false;
+    this.document.name=updatedDocumentName;
+    this.documentsService.updatedDocument(this.document.id, this.document).subscribe((res) => {
+      this.messageService.add({severity: 'success', summary: 'Confirmed', detail: 'file updated'})
+      this.fetchAllDocuments(this.workspace.id);
+    }, error => {
+
+    })
+  }
+
+
 }
