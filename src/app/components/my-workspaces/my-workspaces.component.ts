@@ -39,13 +39,16 @@ export class MyWorkspacesComponent implements OnInit {
   createWorkspace() {
     if (this.createWorkspaceForm.valid) {
       this.workspaceService.createWorkspace(this.createWorkspaceForm.value as Workspace).subscribe(
-        response => {
+        () => {
           this.messageService.add({severity: 'success', summary: 'Success', detail: 'Workspace created!'});
           this.displayModal = false;
           this.loadWorkspaces();
         },
         error => {
-          this.messageService.add({severity: 'error', summary: 'Error', detail: 'Failed to create workspace'});
+          if(error.status === 400)
+            this.messageService.add({severity: 'error', summary: 'Error', detail: 'workspace name already exists'});
+          else
+            this.messageService.add({severity: 'error', summary: 'Error', detail: 'failed to create workspace'});
         }
       );
     }
@@ -53,7 +56,7 @@ export class MyWorkspacesComponent implements OnInit {
 
   loadWorkspaces(): void {
 
-    this.workspaceService.getAllWorkspaces().subscribe(
+    this.workspaceService.getAllWorkspaces("root").subscribe(
       (data) => {
         this.workspaces = data;
         console.log(this.workspaces);

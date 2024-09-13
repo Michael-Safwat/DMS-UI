@@ -31,6 +31,9 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {MessageModule} from "primeng/message";
 import {RatingModule} from "primeng/rating";
 import {TagModule} from "primeng/tag";
+import {MenubarModule} from "primeng/menubar";
+import {ImageModule} from "primeng/image";
+import {RippleModule} from "primeng/ripple";
 
 @NgModule({
   declarations: [
@@ -64,7 +67,10 @@ import {TagModule} from "primeng/tag";
     FormsModule,
     MessageModule,
     RatingModule,
-    TagModule
+    TagModule,
+    MenubarModule,
+    ImageModule,
+    RippleModule
   ],
   providers: [MessageService,
     {

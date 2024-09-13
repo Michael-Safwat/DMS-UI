@@ -1,13 +1,9 @@
 :host {
-  display: block;
+  display: flex;
   width: 100%;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
-  background-color: white;
-}
-
-p-toolbar {
-  width: 100%;
+  justify-content: center; /* Centers the menubar */
 }

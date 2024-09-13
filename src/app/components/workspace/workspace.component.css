@@ -159,3 +159,19 @@
   padding: 10px;
   background-color: #f4f4f4; /* Optional */
 }
+
+.workspace-container {
+  display: flex;
+  justify-content: space-between; /* Ensures the card is on the left and the table on the right */
+  align-items: flex-start;
+  gap: 20px; /* Add space between the card and the table */
+}
+
+p-card {
+  flex-shrink: 0;
+}
+
+p-table {
+  flex-grow: 1;
+}
+

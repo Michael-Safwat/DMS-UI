@@ -1,15 +1,11 @@
 <app-header></app-header>
 
 <div class="container" style="max-width: 800px; margin: 20px auto;">
-  <!-- Card containing the table and button -->
   <div class="card p-4">
-    <!-- Centered "Create Workspace" button -->
     <div class="text-right mb-4">
       <p-button label="Create Workspace" icon="pi pi-plus" class="p-button-success"
                 (click)="displayModal = true"></p-button>
     </div>
-
-    <!-- Table of workspaces -->
     <p-table [value]="workspaces" [tableStyle]="{ 'width': '100%' }">
       <ng-template pTemplate="header">
         <tr>
@@ -33,6 +29,7 @@
   </div>
 </div>
 
+<p-toast></p-toast>
 <p-dialog header="Create Workspace" [(visible)]="displayModal" [modal]="true" [closable]="false"
           [style]="{width: '300px'}">
   <form [formGroup]="createWorkspaceForm" (ngSubmit)="createWorkspace()">
