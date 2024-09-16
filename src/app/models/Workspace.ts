@@ -10,4 +10,5 @@ export interface Workspace {
   directoriesId:string[];
   description: string;
   createdAt: string;
+  path:string;
 }

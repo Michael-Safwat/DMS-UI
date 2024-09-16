@@ -16,19 +16,22 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 })
 export class WorkspaceComponent implements OnInit {
   workspace = {} as Workspace;
+  directory = {} as Workspace;
   directories = [] as Workspace [];
   document = {} as Document;
   documents = [] as Document [];
   combinedData = [] as any [];
   documentId: string = "";
   deleteConfirmationName: string = "";
-  updatedName: string = "";
+  updatedWorkspaceName: string = "";
+  updatedDirectoryName: string = "";
   updatedDescription: string = "";
   updatedDocumentName: string = "";
   documentUrl: SafeResourceUrl = "";
   deleteWorkspaceDialog: boolean = false;
   updateWorkspaceDialog: boolean = false;
   createDirectoryDialog: boolean = false;
+  updateDirectoryDialog: boolean = false;
   documentPreviewDialog: boolean = false;
   updateDocumentDialog: boolean = false;
   createDirectoryForm = {} as FormGroup;
@@ -54,7 +57,7 @@ export class WorkspaceComponent implements OnInit {
     });
 
     this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
+      if (event instanceof NavigationEnd && event.url ==='workspace') {
         const workspaceId = this.route.snapshot.paramMap.get('id');
         this.fetchWorkspace(workspaceId!);
         this.fetchAllDocuments(workspaceId!);
@@ -72,7 +75,7 @@ export class WorkspaceComponent implements OnInit {
     this.workspaceService.getWorkspaceById(id).subscribe(
       (data) => {
         this.workspace = data;
-        this.updatedName = this.workspace.name;
+        this.updatedWorkspaceName = this.workspace.name;
         this.updatedDescription = this.workspace.description
       }, () => {
         this.messageService.add({severity: 'error', summary: 'Error', detail: 'Error fetching workspace!'});
@@ -106,7 +109,17 @@ export class WorkspaceComponent implements OnInit {
 
   deleteWorkspace(workspaceId: string) {
     this.workspaceService.deleteWorkspace(workspaceId).subscribe((res) => {
-      this.router.navigate(['/my-workspaces']);
+      if(this.workspace.parentId ==="root")
+      {
+        this.router.navigate(['/my-workspaces']);
+        this.messageService.add({severity: 'warn', summary: 'Warning', detail: 'workspace deleted!'});
+      }
+      else
+      {
+        this.router.navigate(['/workspace',this.workspace.parentId]);
+        this.messageService.add({severity: 'warn', summary: 'Warning', detail: 'directory deleted!'});
+      }
+      this.deleteWorkspaceDialog = false;
     }, () => {
       this.messageService.add({severity: 'error', summary: 'Error', detail: 'Something went wrong!'});
     });
@@ -153,11 +166,21 @@ export class WorkspaceComponent implements OnInit {
     this.workspace.name = name;
     this.workspace.description = description;
     this.workspaceService.updateWorkspace(this.workspace.id, this.workspace).subscribe((res) => {
-
       this.messageService.add({severity: 'success', summary: 'Success', detail: 'Workspace updated successfully!'});
       this.fetchWorkspace(this.workspace.id);
     }, () => {
       this.messageService.add({severity: 'error', summary: 'Error', detail: 'Unable to update workspace!'});
+    })
+  }
+
+  updateDirectory() {
+    this.directory.name = this.updatedDirectoryName;
+    this.updateDirectoryDialog = false;
+    this.workspaceService.updateWorkspace(this.directory.id, this.directory).subscribe((res) => {
+      this.messageService.add({severity: 'success', summary: 'Success', detail: 'directory updated successfully!'});
+      this.fetchAllDirectories(this.workspace.id);
+    }, () => {
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Unable to update directory!'});
     })
   }
 
@@ -254,4 +277,9 @@ export class WorkspaceComponent implements OnInit {
     })
   }
 
+  confirmUpdateDirectory(directory: Workspace) {
+    this.updateDirectoryDialog = true;
+    this.directory = directory;
+    this.updatedDirectoryName = directory.name;
+  }
 }

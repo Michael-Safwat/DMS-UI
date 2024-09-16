@@ -5,8 +5,8 @@
           [style]="{ width: '400px' }">
     <p>{{ workspace.description }}</p>
     <ng-template pTemplate="footer">
-      <p-button label="Update" icon="pi pi-pencil" severity="warning" (click)="updateWorkspaceDialog =true"></p-button>
-      <p-button label="delete" icon="pi pi-trash" severity="danger" styleClass="p-button-secondary"
+      <p-button *ngIf="workspace.parentId==='root'" label="Update" icon="pi pi-pencil" severity="warning" (click)="updateWorkspaceDialog =true"></p-button>
+      <p-button *ngIf="workspace.parentId==='root'" label="delete" icon="pi pi-trash" severity="danger" styleClass="p-button-secondary"
                 [style]="{ 'margin-left': '.5em' }" (click)="deleteWorkspaceDialog = true"></p-button>
     </ng-template>
   </p-card>
@@ -27,13 +27,13 @@
                   (click)=" createDirectoryDialog = true"></p-button>
       <p-fileUpload mode="basic" accept="image/*, .pdf, .txt" name="file"
                     url="http://localhost:8080/workspaces/{{workspace.id}}/documents" (onUpload)="onUpload($event)"
-                    [maxFileSize]="1000000" label="upload" chooseLabel="upload files" class="mr-2 inline-block"
+                    [maxFileSize]="1000000"  chooseLabel="upload files" class="mr-2 inline-block"
                     [multiple]="false">
       </p-fileUpload>
       </span>
         <span class="p-input-icon-left">
                 <i class="pi pi-search"></i>
-                <input pInputText type="text" (input)="dt.filterGlobal($event.target, 'contains')"
+                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
                        placeholder="Search..."/>
             </span>
       </div>
@@ -71,8 +71,10 @@
         </td>
         <td>{{ document.createdAt | date: 'medium' }}</td>
         <td>
-          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+          <button *ngIf="document.flag === 'document'" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
                   (click)="confirmDocumentUpdate(document)"></button>
+          <button *ngIf="document.flag === 'directory'" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                  (click)="confirmUpdateDirectory(document)"></button>
           <button *ngIf="document.flag === 'document'" pButton pRipple icon="pi pi-download" class="p-button-rounded p-button-info mr-2"
                   (click)="downloadDocument(document.id)"></button>
           <button *ngIf="document.flag === 'document'" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger mr-2"
@@ -86,14 +88,12 @@
 </div>
 
 
-<p-dialog header="Confirm Delete Workspace" [(visible)]="deleteWorkspaceDialog" [modal]="true" [closable]="false">
+<p-dialog header="Confirm Delete workspace" [(visible)]="deleteWorkspaceDialog" [modal]="true" [closable]="false">
   <p>To confirm deletion, please enter the workspace name:</p>
-
-  <input type="text" placeholder="Workspace name" [(ngModel)]="deleteConfirmationName" class="confirmation-input">
+  <input type="text" placeholder="workspace name" [(ngModel)]="deleteConfirmationName" class="confirmation-input">
 
   <p-message *ngIf="deleteConfirmationName && deleteConfirmationName !== workspace.name"
-             severity="error" text="Workspace name does not match"></p-message>
-
+             severity="error" text="workspace name does not match"></p-message>
   <p-footer>
     <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary"
             (click)="deleteWorkspaceDialog = false"></button>
@@ -106,21 +106,21 @@
 <p-dialog header="Update Workspace" [(visible)]="updateWorkspaceDialog" [modal]="true" [closable]="false">
 
   <label for="workspace_name">Workspace Name</label>
-  <input type="text" placeholder="Workspace name" id="workspace_name" [(ngModel)]="updatedName"
+  <input type="text" placeholder="Workspace name" id="workspace_name" [(ngModel)]="updatedWorkspaceName"
          class="confirmation-input">
   <label for="workspace_description">Workspace Description</label>
   <input type="text" placeholder="Workspace name" id="workspace_description" [(ngModel)]="updatedDescription"
          class="confirmation-input">
 
-  <p-message *ngIf="updatedName === workspace.name && updatedDescription === workspace.description"
+  <p-message *ngIf="updatedWorkspaceName === workspace.name && updatedDescription === workspace.description"
              severity="error" text="Workspace data not changed"></p-message>
 
   <p-footer>
     <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary"
             (click)="updateWorkspaceDialog = false"></button>
     <button pButton label="Update" icon="pi pi-check" class="p-button-warning"
-            [disabled]="updatedName === workspace.name && updatedDescription === workspace.description"
-            (click)="updateWorkspace(updatedName,updatedDescription)"></button>
+            [disabled]="updatedWorkspaceName === workspace.name && updatedDescription === workspace.description"
+            (click)="updateWorkspace(updatedWorkspaceName,updatedDescription)"></button>
   </p-footer>
 </p-dialog>
 
@@ -174,5 +174,20 @@
 
     </p-footer>
   </form>
+</p-dialog>
+
+<p-dialog header="Update Directory" [(visible)]="updateDirectoryDialog" [modal]="true" [closable]="false">
+
+  <label for="directory_name">Directory Name</label>
+  <input type="text" placeholder="directory name" id="directory_name" [(ngModel)]="updatedDirectoryName" class="confirmation-input">
+
+  <p-message *ngIf="updatedDirectoryName === directory.name" severity="error" text="directory name not changed"></p-message>
+  <p-footer>
+    <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary"
+            (click)="updateDirectoryDialog = false"></button>
+    <button pButton label="Update" icon="pi pi-check" class="p-button-warning"
+            [disabled]="updatedDirectoryName === directory.name"
+            (click)="updateDirectory()"></button>
+  </p-footer>
 </p-dialog>
 

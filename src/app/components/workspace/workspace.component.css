@@ -162,9 +162,12 @@
 
 .workspace-container {
   display: flex;
-  justify-content: space-between; /* Ensures the card is on the left and the table on the right */
+  justify-content: space-between;
   align-items: flex-start;
-  gap: 20px; /* Add space between the card and the table */
+  gap: 20px;
+  /* Allow scrolling if content overflows */
+  overflow-y: auto;
+  max-height: 80vh; /* Adjust as needed to fit your design */
 }
 
 p-card {
@@ -173,5 +176,15 @@ p-card {
 
 p-table {
   flex-grow: 1;
+  max-height: 70vh; /* Restrict the height of the table */
+  overflow-y: auto; /* Allow vertical scrolling */
+  overflow-x: hidden; /* Hide horizontal scrolling */
+}
+
+/* Ensure the body of the table is scrollable */
+.p-table .p-datatable-scrollable-body {
+  max-height: 60vh; /* Set max height for the table content */
+  overflow-y: auto; /* Enable scrolling */
+  overflow-x: hidden; /* Hide horizontal scrolling */
 }
 
