@@ -1,190 +1,22 @@
-/* General container for workspace details */
-.workspace-details-container {
-  max-width: 1100px;
-  margin: 30px auto;
-  padding: 30px;
-  background-color: #f9f9f9;
-  border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-/* Workspace title styling */
-.workspace-title {
-  font-size: 2.8rem;
-  font-weight: bold;
-  color: #2c3e50;
-  margin-bottom: 20px;
-}
-
-/* Workspace metadata styling */
-.workspace-meta {
-  margin-bottom: 35px;
-}
-
-.workspace-description {
-  font-size: 1.2rem;
-  color: #555;
-  margin-bottom: 10px;
-}
-
-.workspace-created {
-  font-size: 0.95rem;
-  color: #888;
-}
-
-/* Action buttons styling */
-.workspace-actions {
+.workspace-layout {
   display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 40px;
+  justify-content: center; /* Centers the workspace card horizontally */
+  align-items: center; /* Centers the workspace card vertically */
+  gap: 2rem; /* Space between the workspace card and the table */
+  position: relative;
+  padding: 1rem;
 }
 
-.p-button {
-  font-size: 1rem;
-  padding: 12px 24px;
+.workspace-card {
+  position: sticky; /* Keeps the workspace card in a fixed position */
+  top: 0; /* Sticks the card to the top when the page scrolls */
+  max-width: 400px; /* Ensures the card has a fixed width */
 }
 
-/* File upload section styling */
-.file-upload-section {
-  margin: 40px 0;
-  padding: 25px;
-  background-color: #fff;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
-  text-align: center;
+.table-container {
+  flex: 1; /* Allows the table to take up the remaining space */
+  overflow-x: auto; /* Allows horizontal scrolling for the table if needed */
 }
 
-.file-upload-header {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #34495e;
-  margin-bottom: 20px;
-}
 
-/* Documents section */
-.documents-section {
-  margin-top: 50px;
-  text-align: left;
-}
-
-.documents-section h2 {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #34495e;
-  margin-bottom: 30px;
-}
-
-/* Document cards grid */
-.p-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
-
-.p-col-12 {
-  flex: 0 0 100%;
-}
-
-.p-md-4 {
-  flex: 0 0 calc(33.33% - 20px);
-}
-
-/* Document card styling */
-.p-card {
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-  text-align: left;
-  transition: all 0.3s;
-}
-
-.p-card:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.p-card-header {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-.p-card-subheader {
-  font-size: 1.1rem;
-  color: #7f8c8d;
-  margin-bottom: 15px;
-}
-
-.p-card-content p {
-  color: #555;
-}
-
-/* Dialogs styling */
-.p-dialog {
-  max-width: 600px;
-}
-
-.confirmation-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-top: 15px;
-}
-
-.p-footer {
-  text-align: right;
-  margin-top: 20px;
-}
-
-.document-preview {
-  width: 100%;
-  height: 100%;
-}
-
-.image-preview {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;  /* Ensures the image scales without distortion */
-}
-
-.modal-header {
-  display: flex;
-  justify-content: flex-end;
-  padding: 10px;
-  background-color: #f4f4f4; /* Optional */
-}
-
-.workspace-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
-  /* Allow scrolling if content overflows */
-  overflow-y: auto;
-  max-height: 80vh; /* Adjust as needed to fit your design */
-}
-
-p-card {
-  flex-shrink: 0;
-}
-
-p-table {
-  flex-grow: 1;
-  max-height: 70vh; /* Restrict the height of the table */
-  overflow-y: auto; /* Allow vertical scrolling */
-  overflow-x: hidden; /* Hide horizontal scrolling */
-}
-
-/* Ensure the body of the table is scrollable */
-.p-table .p-datatable-scrollable-body {
-  max-height: 60vh; /* Set max height for the table content */
-  overflow-y: auto; /* Enable scrolling */
-  overflow-x: hidden; /* Hide horizontal scrolling */
-}
 

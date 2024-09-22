@@ -5,10 +5,10 @@ export interface Workspace {
   id: string;
   name: string;
   userNID: string;
-  parentId:string;
+  parentId: string;
   documentsIds: string[];
-  directoriesId:string[];
+  directoriesId: string[];
   description: string;
   createdAt: string;
-  path:string;
+  path: string;
 }

@@ -13,9 +13,17 @@ import {Router} from "@angular/router";
 })
 export class MyWorkspacesComponent implements OnInit {
 
-  displayModal: boolean = false;
+  workspace = {} as Workspace;
   workspaces: Workspace[] = [];
   createWorkspaceForm!: FormGroup;
+  createWorkspaceDialog: boolean = false;
+  deleteWorkspaceDialog: boolean = false;
+  updateWorkspaceDialog: boolean = false;
+  deleteConfirmationName: string = "";
+  updatedWorkspaceName: string = "";
+  updatedDescription: string = "";
+  searchTerm: string = "";
+
 
   constructor(private workspaceService: WorkspacesService,
               private fb: FormBuilder,
@@ -25,7 +33,7 @@ export class MyWorkspacesComponent implements OnInit {
 
   ngOnInit() {
     this.createWorkspaceForm = this.fb.group({name: ['', Validators.required], description: ['', Validators.required]});
-    this.loadWorkspaces();
+    this.fetchWorkspaces();
   }
 
   get name() {
@@ -41,11 +49,11 @@ export class MyWorkspacesComponent implements OnInit {
       this.workspaceService.createWorkspace(this.createWorkspaceForm.value as Workspace).subscribe(
         () => {
           this.messageService.add({severity: 'success', summary: 'Success', detail: 'Workspace created!'});
-          this.displayModal = false;
-          this.loadWorkspaces();
+          this.createWorkspaceDialog = false;
+          this.fetchWorkspaces();
         },
         error => {
-          if(error.status === 400)
+          if (error.status === 400)
             this.messageService.add({severity: 'error', summary: 'Error', detail: 'workspace name already exists'});
           else
             this.messageService.add({severity: 'error', summary: 'Error', detail: 'failed to create workspace'});
@@ -54,7 +62,7 @@ export class MyWorkspacesComponent implements OnInit {
     }
   }
 
-  loadWorkspaces(): void {
+  fetchWorkspaces(): void {
 
     this.workspaceService.getAllWorkspaces("root").subscribe(
       (data) => {
@@ -69,4 +77,59 @@ export class MyWorkspacesComponent implements OnInit {
   getWorkspace(id: string) {
     this.router.navigate(['/workspace', id]);
   }
+
+  deleteWorkspaceConfirmation(workspace: Workspace) {
+    this.workspace = workspace;
+    this.deleteWorkspaceDialog = true;
+  }
+
+  deleteWorkspace(workspaceId: string) {
+    this.deleteWorkspaceDialog = false;
+    this.deleteConfirmationName = "";
+    this.workspaceService.deleteWorkspace(workspaceId).subscribe((res) => {
+      this.fetchWorkspaces();
+      this.messageService.add({severity: 'warn', summary: 'Warning', detail: 'directory deleted!'});
+    }, () => {
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Something went wrong!'});
+    });
+  }
+
+  updateWorkspaceConfirmation(workspace: Workspace) {
+    this.workspace = workspace;
+    this.updateWorkspaceDialog = true;
+    this.updatedWorkspaceName = workspace.name;
+    this.updatedDescription = workspace.description;
+  }
+
+  updateWorkspace(name: string, description: string) {
+    this.updateWorkspaceDialog = false;
+    this.workspace.name = name;
+    this.workspace.description = description;
+    this.workspaceService.updateWorkspace(this.workspace.id, this.workspace).subscribe((res) => {
+      this.messageService.add({severity: 'success', summary: 'Success', detail: 'Workspace updated successfully!'});
+      this.fetchWorkspaces();
+    }, () => {
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Unable to update workspace!'});
+    })
+  }
+
+  onSearchTermChange() {
+    if (this.searchTerm.trim() === '') {
+      this.fetchWorkspaces();
+    } else {
+      this.search();
+    }
+  }
+
+  search() {
+    this.workspaceService.searchWorkspaces(this.searchTerm, localStorage.getItem("nid")!).subscribe((res) => {
+      this.workspaces = res;
+    }, error => {
+
+    });
+  }
 }
+
+
+
+

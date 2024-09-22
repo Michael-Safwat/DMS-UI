@@ -1,134 +1,109 @@
 <app-header></app-header>
 
-<div class="workspace-container">
-  <p-card header="{{ workspace.name }}" subheader="Created At: {{ workspace.createdAt | date: 'medium' }}"
-          [style]="{ width: '400px' }">
-    <p>{{ workspace.description }}</p>
-    <ng-template pTemplate="footer">
-      <p-button *ngIf="workspace.parentId==='root'" label="Update" icon="pi pi-pencil" severity="warning" (click)="updateWorkspaceDialog =true"></p-button>
-      <p-button *ngIf="workspace.parentId==='root'" label="delete" icon="pi pi-trash" severity="danger" styleClass="p-button-secondary"
-                [style]="{ 'margin-left': '.5em' }" (click)="deleteWorkspaceDialog = true"></p-button>
-    </ng-template>
-  </p-card>
+<div class="workspace-layout">
+  <div class="workspace-card">
+    <p-card header="{{ workspace.name }}" subheader="Created At: {{ workspace.createdAt | date: 'medium' }}"
+            [style]="{ width: '400px' }">
+      <p *ngIf="workspace.parentId!=='root'">{{ workspace.path }}</p>
+      <p *ngIf="workspace.parentId == 'root'">{{ workspace.description }}</p>
+      <ng-template pTemplate="footer">
 
-  <p-table
-    #dt
-    [value]="combinedData"
-    [rows]="10"
-    [globalFilterFields]="['name', 'type', 'creation_date']"
-    [tableStyle]="{ 'min-width': '50rem' }"
-    [rowHover]="true"
-    dataKey="id"
-  >
-    <ng-template pTemplate="caption">
-      <div class="flex align-items-center justify-content-between">
+      </ng-template>
+    </p-card>
+  </div>
+
+  <div class="table-container">
+    <p-table
+      [value]="combinedData"
+      [rows]="5"
+      [globalFilterFields]="['name', 'type', 'creation_date']"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      [rowHover]="true"
+      [paginator]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [showCurrentPageReport]="true"
+      dataKey="id"
+    >
+      <ng-template pTemplate="caption">
+        <div class="flex align-items-center justify-content-between">
       <span class="p-input-icon-right">
         <p-button label="Create Directory" icon="pi pi-folder" class="mr-2 inline-block"
                   (click)=" createDirectoryDialog = true"></p-button>
       <p-fileUpload mode="basic" accept="image/*, .pdf, .txt" name="file"
-                    url="http://localhost:8080/workspaces/{{workspace.id}}/documents" (onUpload)="onUpload($event)"
-                    [maxFileSize]="1000000"  chooseLabel="upload files" class="mr-2 inline-block"
+                    url="http://localhost:8080/workspaces/{{workspace.id}}/documents" (onUpload)="onUpload()"
+                    [maxFileSize]="1000000" chooseLabel="upload files" class="mr-2 inline-block"
                     [multiple]="false">
       </p-fileUpload>
       </span>
-        <span class="p-input-icon-left">
+          <span class="p-input-icon-left">
                 <i class="pi pi-search"></i>
-                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                <input pInputText type="text" [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange()"
                        placeholder="Search..."/>
             </span>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="header">
-      <tr>
-        <th pSortableColumn="name" style="min-width:15rem">Name
-          <p-sortIcon field="name"></p-sortIcon>
-        </th>
-        <th pSortableColumn="type" style="min-width:10rem">Type
-          <p-sortIcon field="type"></p-sortIcon>
-        </th>
-        <th pSortableColumn="createdAt">Creation time
-          <p-sortIcon field="createdAt"></p-sortIcon>
-        </th>
-        <th></th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-document>
-      <tr>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="name" style="min-width:15rem">Name
+            <p-sortIcon field="name"></p-sortIcon>
+          </th>
+          <th pSortableColumn="type" style="min-width:10rem">Type
+            <p-sortIcon field="type"></p-sortIcon>
+          </th>
+          <th pSortableColumn="createdAt">Creation time
+            <p-sortIcon field="createdAt"></p-sortIcon>
+          </th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-document>
+        <tr>
 
-        <td>
-          <div *ngIf="document.flag === 'document'" class="text-center">
-            <p-button label="{{document.name}}" [link]="true"
-                      (click)="previewDocument(document.id,document.type)"></p-button>
-          </div>
-          <div *ngIf="document.flag === 'directory'" class="text-center">
-            <p-button label="{{document.name}}" [link]="true"
-                      (click)="enterDirectory(document.id)"></p-button>
-          </div>
-        </td>
-        <td>
-          <i *ngIf="document.flag === 'document'" class="pi pi-file" style="font-size: 1.12rem">{{ document.type }}</i>
-          <i *ngIf="document.flag === 'directory'" class="pi pi-folder" style="font-size: 1.12rem"> directory</i>
-        </td>
-        <td>{{ document.createdAt | date: 'medium' }}</td>
-        <td>
-          <button *ngIf="document.flag === 'document'" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                  (click)="confirmDocumentUpdate(document)"></button>
-          <button *ngIf="document.flag === 'directory'" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                  (click)="confirmUpdateDirectory(document)"></button>
-          <button *ngIf="document.flag === 'document'" pButton pRipple icon="pi pi-download" class="p-button-rounded p-button-info mr-2"
-                  (click)="downloadDocument(document.id)"></button>
-          <button *ngIf="document.flag === 'document'" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger mr-2"
-                  (click)="confirmDocumentDelete(document.id)"></button>
-          <button *ngIf="document.flag === 'directory'" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger mr-2"
-                  (click)="confirmDirectoryDelete(document.id)"></button>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+          <td>
+            <div *ngIf="document.flag === 'document'" class="text-center">
+              <p-button label="{{document.name}}" [link]="true"
+                        (click)="previewDocument(document.id,document.type)"></p-button>
+            </div>
+            <div *ngIf="document.flag === 'directory'" class="text-center">
+              <p-button label="{{document.name}}" [link]="true"
+                        (click)="enterDirectory(document.id)"></p-button>
+            </div>
+          </td>
+          <td>
+            <i *ngIf="document.flag === 'document'" class="pi pi-file"
+               style="font-size: 1.12rem">{{ document.type }}</i>
+            <i *ngIf="document.flag === 'directory'" class="pi pi-folder" style="font-size: 1.12rem"> directory</i>
+          </td>
+          <td>{{ document.createdAt | date: 'medium' }}</td>
+          <td>
+            <button *ngIf="document.flag === 'document'" pButton pRipple icon="pi pi-pencil"
+                    class="p-button-rounded p-button-success mr-2"
+                    (click)="confirmDocumentUpdate(document)"></button>
+            <button *ngIf="document.flag === 'directory'" pButton pRipple icon="pi pi-pencil"
+                    class="p-button-rounded p-button-success mr-2"
+                    (click)="confirmUpdateDirectory(document)"></button>
+            <button *ngIf="document.flag === 'document'" pButton pRipple icon="pi pi-trash"
+                    class="p-button-rounded p-button-danger mr-2"
+                    (click)="confirmDocumentDelete(document.id)"></button>
+            <button *ngIf="document.flag === 'directory'" pButton pRipple icon="pi pi-trash"
+                    class="p-button-rounded p-button-danger mr-2"
+                    (click)="confirmDirectoryDelete(document.id)"></button>
+            <button *ngIf="document.flag === 'document'" pButton pRipple icon="pi pi-download"
+                    class="p-button-rounded p-button-info mr-2"
+                    (click)="downloadDocument(document.id)"></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>
 
-
-<p-dialog header="Confirm Delete workspace" [(visible)]="deleteWorkspaceDialog" [modal]="true" [closable]="false">
-  <p>To confirm deletion, please enter the workspace name:</p>
-  <input type="text" placeholder="workspace name" [(ngModel)]="deleteConfirmationName" class="confirmation-input">
-
-  <p-message *ngIf="deleteConfirmationName && deleteConfirmationName !== workspace.name"
-             severity="error" text="workspace name does not match"></p-message>
-  <p-footer>
-    <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary"
-            (click)="deleteWorkspaceDialog = false"></button>
-    <button pButton label="Delete" icon="pi pi-check" class="p-button-danger"
-            [disabled]="deleteConfirmationName !== workspace.name"
-            (click)="deleteWorkspace(workspace.id)"></button>
-  </p-footer>
-</p-dialog>
-
-<p-dialog header="Update Workspace" [(visible)]="updateWorkspaceDialog" [modal]="true" [closable]="false">
-
-  <label for="workspace_name">Workspace Name</label>
-  <input type="text" placeholder="Workspace name" id="workspace_name" [(ngModel)]="updatedWorkspaceName"
-         class="confirmation-input">
-  <label for="workspace_description">Workspace Description</label>
-  <input type="text" placeholder="Workspace name" id="workspace_description" [(ngModel)]="updatedDescription"
-         class="confirmation-input">
-
-  <p-message *ngIf="updatedWorkspaceName === workspace.name && updatedDescription === workspace.description"
-             severity="error" text="Workspace data not changed"></p-message>
-
-  <p-footer>
-    <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary"
-            (click)="updateWorkspaceDialog = false"></button>
-    <button pButton label="Update" icon="pi pi-check" class="p-button-warning"
-            [disabled]="updatedWorkspaceName === workspace.name && updatedDescription === workspace.description"
-            (click)="updateWorkspace(updatedWorkspaceName,updatedDescription)"></button>
-  </p-footer>
-</p-dialog>
-
-<p-dialog [(visible)]="documentPreviewDialog" [modal]="true" [style]="{width: '90vw', height: '90vh'}"
-          [dismissableMask]="true" [closable]="true">
-  <iframe [src]="documentUrl" class="document-preview"></iframe>
-
-<!--  <p-image [src]="documentUrl" class="document-preview"></p-image>-->
+<p-dialog [(visible)]="documentPreviewDialog" [modal]="true" [dismissableMask]="true" [closable]="true"
+          [style]="{width:'50vw',height:'50vh'}">
+  <ng-container *ngIf="documentUrl">
+    <p-image *ngIf="isImageFile()" [src]="documentUrl" [style]="{width:'50vw',height:'50vh'}"></p-image>
+    <iframe *ngIf="!isImageFile()" [src]="documentUrl"></iframe>
+  </ng-container>
 </p-dialog>
 
 <p-toast></p-toast>
@@ -136,11 +111,12 @@
 
 <p-dialog header="Update Document" [(visible)]="updateDocumentDialog" [modal]="true" [closable]="false">
 
-  <label for="workspace_name">Document Name</label>
+  <label for="document_name">Document Name</label>
   <input type="text" placeholder="Document name" id="document_name" [(ngModel)]="updatedDocumentName"
          class="confirmation-input">
 
-  <p-message *ngIf="updatedDocumentName === document.name" severity="error" text="Document name not changed"></p-message>
+  <p-message *ngIf="updatedDocumentName === document.name" severity="error"
+             text="Document name not changed"></p-message>
   <p-footer>
     <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary"
             (click)="updateDocumentDialog = false"></button>
@@ -179,9 +155,11 @@
 <p-dialog header="Update Directory" [(visible)]="updateDirectoryDialog" [modal]="true" [closable]="false">
 
   <label for="directory_name">Directory Name</label>
-  <input type="text" placeholder="directory name" id="directory_name" [(ngModel)]="updatedDirectoryName" class="confirmation-input">
+  <input type="text" placeholder="directory name" id="directory_name" [(ngModel)]="updatedDirectoryName"
+         class="confirmation-input">
 
-  <p-message *ngIf="updatedDirectoryName === directory.name" severity="error" text="directory name not changed"></p-message>
+  <p-message *ngIf="updatedDirectoryName === directory.name" severity="error"
+             text="directory name not changed"></p-message>
   <p-footer>
     <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary"
             (click)="updateDirectoryDialog = false"></button>
@@ -190,4 +168,3 @@
             (click)="updateDirectory()"></button>
   </p-footer>
 </p-dialog>
-

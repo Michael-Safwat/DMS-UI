@@ -50,10 +50,14 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('nid', res.nid);
 
       this.messageService.add({severity: 'success', summary: 'Success', detail: 'Login Successfully'});
-      this.router.navigate(['my-profile']);
+      this.router.navigate(['my-workspaces']);
 
     }, error => {
-      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Email or Password is incorrect!'});
+      if (error.status === 400)
+        this.messageService.add({severity: 'error', summary: 'Error', detail: 'Email or Password is incorrect!'});
+      else
+        this.messageService.add({severity: 'error', summary: 'Error', detail: 'Something went wrong try again later!'});
+
     })
   }
 }

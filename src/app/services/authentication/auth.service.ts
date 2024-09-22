@@ -26,8 +26,8 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/login`, loginRequest);
   }
 
-  getUserInfo(userEmail: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/users/${userEmail}`);
+  getUserInfo(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/users`);
   }
 
   logout() {

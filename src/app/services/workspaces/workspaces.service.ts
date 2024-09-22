@@ -14,11 +14,11 @@ export class WorkspacesService {
   constructor(private http: HttpClient) {
   }
 
-  getAllWorkspaces(parentId: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/all/${parentId}`);
+  getAllWorkspaces(parentID: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/all/${parentID}`);
   }
 
-  getWorkspaceById(id: string): Observable<any> {
+  getWorkspaceByID(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/${id}`);
   }
 
@@ -26,24 +26,28 @@ export class WorkspacesService {
     return this.http.post(`${this.baseUrl}`, workspace);
   }
 
-  createDirectory(parentId: string,directory:Workspace):Observable<any>{
-    return this.http.post(`${this.baseUrl}/directories/${parentId}`,directory);
+  createDirectory(parentID: string, directory: Workspace): Observable<any> {
+    return this.http.post(`${this.baseUrl}/directories/${parentID}`, directory);
   }
 
-  deleteWorkspace(workspaceId: string) {
-    return this.http.delete(`${this.baseUrl}/${workspaceId}`);
+  deleteWorkspace(workspaceID: string) {
+    return this.http.delete(`${this.baseUrl}/${workspaceID}`);
   }
 
-  updateWorkspace(workspaceId: string, workspace: Workspace) {
-    return this.http.put(`${this.baseUrl}/${workspaceId}`, workspace);
+  updateWorkspace(workspaceID: string, workspace: Workspace) {
+    return this.http.put(`${this.baseUrl}/${workspaceID}`, workspace);
   }
 
-  uploadDocument(file: FileUploadEvent, workspaceId: string) {
-    return this.http.post(`${this.baseUrl}/${workspaceId}/documents`, file);
+  getAllDocuments(workspaceID: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${workspaceID}/documents`)
   }
 
-  getAllDocuments(workspaceId: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/${workspaceId}/documents`)
+  searchWorkspaces(searchTerm: string, owner: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/search/workspaces/${searchTerm}/${owner}`);
+  }
+
+  searchContent(name: string, workspaceID: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/search/${name}/${workspaceID}`)
   }
 
 }

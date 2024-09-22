@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../services/authentication/auth.service";
 import {User} from "../../models/User";
-import {ActivatedRoute} from "@angular/router";
 import {MessageService} from "primeng/api";
 
 @Component({
@@ -12,18 +11,16 @@ import {MessageService} from "primeng/api";
 export class MyProfileComponent implements OnInit {
 
   user = {} as User;
-  // @ts-ignore
-  userEmail: string = localStorage.getItem("email");
 
   constructor(private userService: AuthService,
               private messageService: MessageService) {
   }
 
   ngOnInit() {
-    this.userService.getUserInfo(this.userEmail).subscribe((res) => {
+    this.userService.getUserInfo().subscribe((res) => {
       this.user = res;
-    }, error => {
-      console.error("couldn't load user data!", error);
+    }, () => {
+      this.messageService.add({severity: 'error', summary: 'Error', detail: "Couldn't load user Data!"});
     })
   }
 

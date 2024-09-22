@@ -1,15 +1,15 @@
 <app-header></app-header>
-<div class="profile-container">
+<div class="profile-container" style="width: 500px; margin: 20px auto;">
   <p-card class="profile-card">
     <div class="profile-header">
       <h2 class="profile-name">{{ user.firstName }} {{ user.lastName }}</h2>
-      <p class="profile-email">{{ user.email }}</p>
+      <p class="profile-email">Created At: {{ user.createdAt | date: 'medium' }}</p>
     </div>
 
     <div class="profile-body">
       <div class="profile-field">
-        <label for="userId" class="profile-label">User ID</label>
-        <p id="userId" class="profile-value">{{ user.id }}</p>
+        <label for="userEmail" class="profile-label">Email</label>
+        <p id="userEmail" class="profile-value">{{ user.email }}</p>
       </div>
       <div class="profile-field">
         <label for="userNid" class="profile-label">National ID</label>

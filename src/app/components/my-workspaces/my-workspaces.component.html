@@ -1,17 +1,40 @@
 <app-header></app-header>
 
-<div class="container" style="max-width: 800px; margin: 20px auto;">
+<div class="container" style="max-width: 1000px; margin: 20px auto;">
   <div class="card p-4">
-    <div class="text-right mb-4">
-      <p-button label="Create Workspace" icon="pi pi-plus" class="p-button-success"
-                (click)="displayModal = true"></p-button>
-    </div>
-    <p-table [value]="workspaces" [tableStyle]="{ 'width': '100%' }">
+    <p-table [value]="workspaces"
+             [tableStyle]="{ 'width': '100%' }"
+             [rows]="4"
+             [globalFilterFields]="['name', 'description', 'creation_date']"
+             [paginator]="true"
+             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+             [showCurrentPageReport]="true">
+      <ng-template pTemplate="caption">
+        <div class="flex align-items-center justify-content-between">
+      <span class="p-input-icon-right">
+       <p-button label="Create Workspace" icon="pi pi-plus" class="p-button-success"
+                 (click)="createWorkspaceDialog = true"></p-button>
+      </span>
+          <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange()"
+                       placeholder="Search..."/>
+            </span>
+        </div>
+      </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th class="text-center">All Workspaces</th>
-          <th>Description</th>
-          <th>Creation time</th>
+          <th pSortableColumn="name">Name
+            <p-sortIcon field="name"></p-sortIcon>
+          </th>
+          <th pSortableColumn="description">Description
+            <p-sortIcon field="description"></p-sortIcon>
+          </th>
+          <th pSortableColumn="createdAt">Creation time
+            <p-sortIcon field="createdAt"></p-sortIcon>
+          </th>
+          <th>Update workspace</th>
+          <th>Delete workspace</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-workspace>
@@ -23,14 +46,27 @@
           </td>
           <td>{{ workspace.description }}</td>
           <td>{{ workspace.createdAt | date:"medium" }}</td>
+          <td>
+            <p-button *ngIf="workspace.parentId==='root'"
+                      label="Update" icon="pi pi-pencil"
+                      severity="warning"
+                      (click)="updateWorkspaceConfirmation(workspace)"></p-button>
+          </td>
+          <td>
+            <p-button *ngIf="workspace.parentId==='root'"
+                      label="delete" icon="pi pi-trash"
+                      severity="danger" styleClass="p-button-secondary"
+                      (click)="deleteWorkspaceConfirmation(workspace)"></p-button>
+          </td>
         </tr>
+
       </ng-template>
     </p-table>
   </div>
 </div>
 
 <p-toast></p-toast>
-<p-dialog header="Create Workspace" [(visible)]="displayModal" [modal]="true" [closable]="false"
+<p-dialog header="Create Workspace" [(visible)]="createWorkspaceDialog" [modal]="true" [closable]="false"
           [style]="{width: '300px'}">
   <form [formGroup]="createWorkspaceForm" (ngSubmit)="createWorkspace()">
     <div class="field">
@@ -59,10 +95,46 @@
     </div>
     <p-footer>
       <div class="field-pair">
-        <p-button label="Cancel" icon="pi pi-times" (click)="displayModal = false"></p-button>
+        <p-button label="Cancel" icon="pi pi-times" (click)="createWorkspaceDialog = false"></p-button>
         <p-button label="Create" icon="pi pi-check" type="submit" [disabled]="createWorkspaceForm.invalid"></p-button>
       </div>
 
     </p-footer>
   </form>
+</p-dialog>
+
+<p-dialog header="Update Workspace" [(visible)]="updateWorkspaceDialog" [modal]="true" [closable]="false">
+
+  <label for="workspace_name">Workspace Name</label>
+  <input type="text" placeholder="Workspace name" id="workspace_name" [(ngModel)]="updatedWorkspaceName"
+         class="confirmation-input">
+  <label for="workspace_description">Workspace Description</label>
+  <input type="text" placeholder="Workspace name" id="workspace_description" [(ngModel)]="updatedDescription"
+         class="confirmation-input">
+
+  <p-message *ngIf="updatedWorkspaceName === workspace.name && updatedDescription === workspace.description"
+             severity="error" text="Workspace data not changed"></p-message>
+
+  <p-footer>
+    <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary"
+            (click)="updateWorkspaceDialog = false"></button>
+    <button pButton label="Update" icon="pi pi-check" class="p-button-warning"
+            [disabled]="updatedWorkspaceName === workspace.name && updatedDescription === workspace.description"
+            (click)="updateWorkspace(updatedWorkspaceName,updatedDescription)"></button>
+  </p-footer>
+</p-dialog>
+
+<p-dialog header="Confirm Delete workspace" [(visible)]="deleteWorkspaceDialog" [modal]="true" [closable]="false">
+  <p>To confirm deletion, please enter the workspace name:</p>
+  <input type="text" placeholder="workspace name" [(ngModel)]="deleteConfirmationName" class="confirmation-input">
+
+  <p-message *ngIf="deleteConfirmationName && deleteConfirmationName !== workspace.name"
+             severity="error" text="workspace name does not match"></p-message>
+  <p-footer>
+    <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary"
+            (click)="deleteWorkspaceDialog = false"></button>
+    <button pButton label="Delete" icon="pi pi-check" class="p-button-danger"
+            [disabled]="deleteConfirmationName !== workspace.name"
+            (click)="deleteWorkspace(workspace.id)"></button>
+  </p-footer>
 </p-dialog>

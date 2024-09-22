@@ -22,14 +22,11 @@ export class WorkspaceComponent implements OnInit {
   documents = [] as Document [];
   combinedData = [] as any [];
   documentId: string = "";
-  deleteConfirmationName: string = "";
-  updatedWorkspaceName: string = "";
   updatedDirectoryName: string = "";
-  updatedDescription: string = "";
   updatedDocumentName: string = "";
+  documentType: string = "";
+  searchTerm: string = "";
   documentUrl: SafeResourceUrl = "";
-  deleteWorkspaceDialog: boolean = false;
-  updateWorkspaceDialog: boolean = false;
   createDirectoryDialog: boolean = false;
   updateDirectoryDialog: boolean = false;
   documentPreviewDialog: boolean = false;
@@ -57,7 +54,7 @@ export class WorkspaceComponent implements OnInit {
     });
 
     this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd && event.url ==='workspace') {
+      if (event instanceof NavigationEnd && event.url === 'workspace') {
         const workspaceId = this.route.snapshot.paramMap.get('id');
         this.fetchWorkspace(workspaceId!);
         this.fetchAllDocuments(workspaceId!);
@@ -72,11 +69,9 @@ export class WorkspaceComponent implements OnInit {
   }
 
   private fetchWorkspace(id: string) {
-    this.workspaceService.getWorkspaceById(id).subscribe(
+    this.workspaceService.getWorkspaceByID(id).subscribe(
       (data) => {
         this.workspace = data;
-        this.updatedWorkspaceName = this.workspace.name;
-        this.updatedDescription = this.workspace.description
       }, () => {
         this.messageService.add({severity: 'error', summary: 'Error', detail: 'Error fetching workspace!'});
       })
@@ -84,44 +79,46 @@ export class WorkspaceComponent implements OnInit {
 
   fetchAllDirectories(parentId: string): void {
     this.workspaceService.getAllWorkspaces(parentId).subscribe((workspaces) => {
-      this.directories = workspaces.map((ws: any)=>({
+      this.directories = workspaces.map((ws: any) => ({
         ...ws,
-        flag:'directory'}));
+        flag: 'directory'
+      }));
       this.combineItems();
     })
   }
 
   private fetchAllDocuments(parentId: string) {
     this.workspaceService.getAllDocuments(parentId).subscribe((res) => {
-      this.documents = res.map((doc: any)=>({
+      this.documents = res.map((doc: any) => ({
         ...doc,
-        flag:'document'}));
+        flag: 'document'
+      }));
       this.combineItems();
-    },()=>{
+    }, () => {
       this.messageService.add({severity: 'error', summary: 'Error', detail: 'Error fetching documents!'});
     })
   }
 
   private combineItems() {
     this.combinedData = [...this.directories, ...this.documents];
-    console.log('Combined Items:', this.combinedData);
   }
 
-  deleteWorkspace(workspaceId: string) {
-    this.workspaceService.deleteWorkspace(workspaceId).subscribe((res) => {
-      if(this.workspace.parentId ==="root")
-      {
-        this.router.navigate(['/my-workspaces']);
-        this.messageService.add({severity: 'warn', summary: 'Warning', detail: 'workspace deleted!'});
-      }
-      else
-      {
-        this.router.navigate(['/workspace',this.workspace.parentId]);
-        this.messageService.add({severity: 'warn', summary: 'Warning', detail: 'directory deleted!'});
-      }
-      this.deleteWorkspaceDialog = false;
-    }, () => {
-      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Something went wrong!'});
+  onSearchTermChange() {
+    if (this.searchTerm.trim() === '') {
+      this.fetchAllDirectories(this.workspace.id);
+      this.fetchAllDocuments(this.workspace.id);
+    } else {
+      this.search();
+    }
+  }
+
+  search() {
+    this.workspaceService.searchContent(this.searchTerm, this.workspace.id).subscribe((res) => {
+      this.directories = res['a'].map((ws: any) => ({...ws, flag: 'directory'}));
+      this.documents = res['b'].map((doc: any) => ({...doc, flag: 'document'}));
+      this.combineItems();
+    }, error => {
+
     });
   }
 
@@ -131,13 +128,16 @@ export class WorkspaceComponent implements OnInit {
         this.messageService.add({severity: 'success', summary: 'Success', detail: 'directory created!'});
         this.createDirectoryDialog = false;
         this.fetchAllDirectories(parentId);
-      }, () => {
-        this.messageService.add({severity: 'error', summary: 'Error', detail: 'Failed to create directory'});
+      }, (error) => {
+        if (error.status === 400)
+          this.messageService.add({severity: 'error', summary: 'Error', detail: 'directory name already exists'});
+        else
+          this.messageService.add({severity: 'error', summary: 'Error', detail: 'failed to create directory!'});
       });
     }
   }
 
-  onUpload(event: any) {
+  onUpload() {
     this.messageService.add({severity: 'success', summary: 'Success', detail: 'file uploaded!'});
     this.fetchAllDocuments(this.workspace.id);
   }
@@ -161,18 +161,6 @@ export class WorkspaceComponent implements OnInit {
     });
   }
 
-  updateWorkspace(name: string, description: string) {
-    this.updateWorkspaceDialog = false;
-    this.workspace.name = name;
-    this.workspace.description = description;
-    this.workspaceService.updateWorkspace(this.workspace.id, this.workspace).subscribe((res) => {
-      this.messageService.add({severity: 'success', summary: 'Success', detail: 'Workspace updated successfully!'});
-      this.fetchWorkspace(this.workspace.id);
-    }, () => {
-      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Unable to update workspace!'});
-    })
-  }
-
   updateDirectory() {
     this.directory.name = this.updatedDirectoryName;
     this.updateDirectoryDialog = false;
@@ -191,7 +179,7 @@ export class WorkspaceComponent implements OnInit {
   previewDocument(documentId: string, documentType: string) {
     this.documentPreviewDialog = true;
     this.documentId = documentId;
-
+    this.documentType = documentType;
 
     this.documentsService.previewDocument(documentId).subscribe((base64Data: string) => {
       const blob = this.base64ToBlob(base64Data, documentType);
@@ -282,4 +270,9 @@ export class WorkspaceComponent implements OnInit {
     this.directory = directory;
     this.updatedDirectoryName = directory.name;
   }
+
+  isImageFile(): boolean {
+    return this.documentType.match(/\.(jpeg|jpg|gif|png)$/i) != null;
+  }
+
 }

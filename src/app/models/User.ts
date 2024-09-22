@@ -6,4 +6,5 @@ export interface User {
   password: string;
   nid: string;
   token: string;
+  createdAt: string;
 }
