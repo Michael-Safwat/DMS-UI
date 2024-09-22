@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {FileUploadEvent} from "primeng/fileupload";
 import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {Document} from "../../models/Document";

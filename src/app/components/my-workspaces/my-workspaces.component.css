@@ -1,0 +1,7 @@
+
+.container{
+  padding-top: 70px; /* Ensure the content is pushed below the menubar */
+}
+.card p-4{
+  overflow: scroll;
+}

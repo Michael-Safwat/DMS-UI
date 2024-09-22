@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {AuthService} from "../../services/authentication/auth.service";
-import {MenuItem, MenuItemCommandEvent} from 'primeng/api';
+import {MenuItem} from 'primeng/api';
 
 @Component({
   selector: 'app-header',

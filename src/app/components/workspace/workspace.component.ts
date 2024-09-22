@@ -46,7 +46,7 @@ export class WorkspaceComponent implements OnInit {
   ngOnInit() {
 
     // Fetch data when the component is initialized
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe(() => {
       const workspaceId = this.route.snapshot.paramMap.get('id');
       this.fetchWorkspace(workspaceId!);
       this.fetchAllDocuments(workspaceId!);
@@ -117,7 +117,7 @@ export class WorkspaceComponent implements OnInit {
       this.directories = res['a'].map((ws: any) => ({...ws, flag: 'directory'}));
       this.documents = res['b'].map((doc: any) => ({...doc, flag: 'document'}));
       this.combineItems();
-    }, error => {
+    }, () => {
 
     });
   }
@@ -154,7 +154,7 @@ export class WorkspaceComponent implements OnInit {
   }
 
   deleteDirectory(directoryId: string) {
-    this.workspaceService.deleteWorkspace(directoryId).subscribe((res) => {
+    this.workspaceService.deleteWorkspace(directoryId).subscribe(() => {
       this.fetchAllDirectories(this.workspace.id);
     }, () => {
       this.messageService.add({severity: 'error', summary: 'Error', detail: 'Something went wrong!'});
@@ -164,7 +164,7 @@ export class WorkspaceComponent implements OnInit {
   updateDirectory() {
     this.directory.name = this.updatedDirectoryName;
     this.updateDirectoryDialog = false;
-    this.workspaceService.updateWorkspace(this.directory.id, this.directory).subscribe((res) => {
+    this.workspaceService.updateWorkspace(this.directory.id, this.directory).subscribe(() => {
       this.messageService.add({severity: 'success', summary: 'Success', detail: 'directory updated successfully!'});
       this.fetchAllDirectories(this.workspace.id);
     }, () => {
@@ -259,7 +259,7 @@ export class WorkspaceComponent implements OnInit {
   updateDocument(updatedDocumentName: string) {
     this.updateDocumentDialog = false;
     this.document.name = updatedDocumentName;
-    this.documentsService.updatedDocument(this.document.id, this.document).subscribe((res) => {
+    this.documentsService.updatedDocument(this.document.id, this.document).subscribe(() => {
       this.messageService.add({severity: 'success', summary: 'Confirmed', detail: 'file updated'})
       this.fetchAllDocuments(this.workspace.id);
     })
@@ -272,7 +272,8 @@ export class WorkspaceComponent implements OnInit {
   }
 
   isImageFile(): boolean {
-    return this.documentType.match(/\.(jpeg|jpg|gif|png)$/i) != null;
+    return this.documentType === "image/jpeg";
+
   }
 
 }

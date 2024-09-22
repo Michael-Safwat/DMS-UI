@@ -62,7 +62,7 @@ export class RegisterComponent {
         this.messageService.add({severity: 'success', summary: 'Success', detail: 'Registered Successfully'});
         this.router.navigate(['login']);
       },
-      error => {
+      () => {
         this.messageService.add({severity: 'error', summary: 'Error', detail: 'Register form input not valid!'});
       })
   }

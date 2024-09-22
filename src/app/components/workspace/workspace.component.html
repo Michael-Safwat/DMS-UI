@@ -6,9 +6,6 @@
             [style]="{ width: '400px' }">
       <p *ngIf="workspace.parentId!=='root'">{{ workspace.path }}</p>
       <p *ngIf="workspace.parentId == 'root'">{{ workspace.description }}</p>
-      <ng-template pTemplate="footer">
-
-      </ng-template>
     </p-card>
   </div>
 
@@ -38,7 +35,7 @@
           <span class="p-input-icon-left">
                 <i class="pi pi-search"></i>
                 <input pInputText type="text" [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange()"
-                       placeholder="Search..."/>
+                       placeholder="Search..." />
             </span>
         </div>
       </ng-template>
@@ -62,7 +59,7 @@
           <td>
             <div *ngIf="document.flag === 'document'" class="text-center">
               <p-button label="{{document.name}}" [link]="true"
-                        (click)="previewDocument(document.id,document.type)"></p-button>
+                        (click)="previewDocument(document.id,document.type)" [style]="{'max-width':'15rem'}"></p-button>
             </div>
             <div *ngIf="document.flag === 'directory'" class="text-center">
               <p-button label="{{document.name}}" [link]="true"
@@ -98,15 +95,13 @@
   </div>
 </div>
 
-<p-dialog [(visible)]="documentPreviewDialog" [modal]="true" [dismissableMask]="true" [closable]="true"
-          [style]="{width:'50vw',height:'50vh'}">
-  <ng-container *ngIf="documentUrl">
-    <p-image *ngIf="isImageFile()" [src]="documentUrl" [style]="{width:'50vw',height:'50vh'}"></p-image>
-    <iframe *ngIf="!isImageFile()" [src]="documentUrl"></iframe>
-  </ng-container>
+<p-dialog [(visible)]="documentPreviewDialog" [modal]="true" [dismissableMask]="true" [closable]="true">
+  <img *ngIf="documentUrl && isImageFile()" [src]="documentUrl" class="document-image" alt="">
+  <iframe *ngIf="documentUrl && !isImageFile()" [src]="documentUrl" class="document-file" ></iframe>
 </p-dialog>
 
-<p-toast></p-toast>
+
+<p-toast></p-toast>ٍ
 <p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
 
 <p-dialog header="Update Document" [(visible)]="updateDocumentDialog" [modal]="true" [closable]="false">

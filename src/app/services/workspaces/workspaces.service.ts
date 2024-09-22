@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Workspace} from "../../models/Workspace";
-import {FileUpload, FileUploadEvent} from "primeng/fileupload";
 
 @Injectable({
   providedIn: 'root'
@@ -43,11 +42,11 @@ export class WorkspacesService {
   }
 
   searchWorkspaces(searchTerm: string, owner: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/search/workspaces/${searchTerm}/${owner}`);
+    return this.http.get(`${this.baseUrl}/search/${searchTerm}/${owner}`);
   }
 
   searchContent(name: string, workspaceID: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/search/${name}/${workspaceID}`)
+    return this.http.get(`${this.baseUrl}/search/content/${name}/${workspaceID}`)
   }
 
 }

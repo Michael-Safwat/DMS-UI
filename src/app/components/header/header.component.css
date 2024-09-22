@@ -6,4 +6,9 @@
   left: 0;
   z-index: 1000;
   justify-content: center; /* Centers the menubar */
+  margin-bottom: 50px;
+}
+
+.menubar-container {
+  height: 50px; /* Define the height of the menubar */
 }

@@ -86,7 +86,7 @@ export class MyWorkspacesComponent implements OnInit {
   deleteWorkspace(workspaceId: string) {
     this.deleteWorkspaceDialog = false;
     this.deleteConfirmationName = "";
-    this.workspaceService.deleteWorkspace(workspaceId).subscribe((res) => {
+    this.workspaceService.deleteWorkspace(workspaceId).subscribe(() => {
       this.fetchWorkspaces();
       this.messageService.add({severity: 'warn', summary: 'Warning', detail: 'directory deleted!'});
     }, () => {
@@ -105,7 +105,7 @@ export class MyWorkspacesComponent implements OnInit {
     this.updateWorkspaceDialog = false;
     this.workspace.name = name;
     this.workspace.description = description;
-    this.workspaceService.updateWorkspace(this.workspace.id, this.workspace).subscribe((res) => {
+    this.workspaceService.updateWorkspace(this.workspace.id, this.workspace).subscribe(() => {
       this.messageService.add({severity: 'success', summary: 'Success', detail: 'Workspace updated successfully!'});
       this.fetchWorkspaces();
     }, () => {
@@ -124,7 +124,7 @@ export class MyWorkspacesComponent implements OnInit {
   search() {
     this.workspaceService.searchWorkspaces(this.searchTerm, localStorage.getItem("nid")!).subscribe((res) => {
       this.workspaces = res;
-    }, error => {
+    }, () => {
 
     });
   }
