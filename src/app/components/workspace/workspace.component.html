@@ -74,10 +74,10 @@
           <td>{{ document.createdAt | date: 'medium' }}</td>
           <td>
             <button *ngIf="document.flag === 'document'" pButton pRipple icon="pi pi-pencil"
-                    class="p-button-rounded p-button-success mr-2"
+                    class="p-button-rounded p-button-warning mr-2"
                     (click)="confirmDocumentUpdate(document)"></button>
             <button *ngIf="document.flag === 'directory'" pButton pRipple icon="pi pi-pencil"
-                    class="p-button-rounded p-button-success mr-2"
+                    class="p-button-rounded p-button-warning mr-2"
                     (click)="confirmUpdateDirectory(document)"></button>
             <button *ngIf="document.flag === 'document'" pButton pRipple icon="pi pi-trash"
                     class="p-button-rounded p-button-danger mr-2"

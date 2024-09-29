@@ -88,7 +88,7 @@ export class MyWorkspacesComponent implements OnInit {
     this.deleteConfirmationName = "";
     this.workspaceService.deleteWorkspace(workspaceId).subscribe(() => {
       this.fetchWorkspaces();
-      this.messageService.add({severity: 'warn', summary: 'Warning', detail: 'directory deleted!'});
+      this.messageService.add({severity: 'warn', summary: 'Warning', detail: 'Workspace deleted!'});
     }, () => {
       this.messageService.add({severity: 'error', summary: 'Error', detail: 'Something went wrong!'});
     });
